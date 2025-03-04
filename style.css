@@ -43,6 +43,9 @@ header {
 .block_header_background{
     width: 100%;
     background-color: #F3E5D8;
+    -webkit-box-shadow: 0px 12px 11px 0px rgba(34, 60, 80, 0.2);
+    -moz-box-shadow: 0px 12px 11px 0px rgba(34, 60, 80, 0.2);
+    box-shadow: 0px 12px 11px 0px rgba(34, 60, 80, 0.2);
 }
 .block_header {
     height: 70px;
@@ -113,6 +116,7 @@ header {
 .catalog-container:hover .dropdown-menu {
     display: block;
 }
+
 .search-input {
     height: 42px;
     width: 570px;
@@ -122,6 +126,10 @@ header {
     font-size: 16px;
     margin-right: 0px;
     margin-left: 50px;
+}
+.search-input :active, :hover, :focus {
+    outline: 0;
+    outline-offset: 0;
 }
 .search-btn {
     height: 42px;
@@ -137,7 +145,7 @@ header {
     display: flex;
     align-items: center;
     gap: 8px;
-    margin-left: -100px;
+    margin-left: -30px;
     margin-right: 0px;
 }
 .search-btn img {
@@ -209,7 +217,8 @@ header {
     transition: 0.5s;
 }
 .text_collab_block a:hover{
-    transform: scale(1.03);
+    background-color: #fff;
+    color: #d76a04;
     transition: 0.5s;
 }
 .collab_block img{
@@ -218,13 +227,28 @@ header {
     margin-top: 25px;
 }
 
-.intro_block{
+@keyframes gradientAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.intro_block {
     width: 100%;
-    background-color: #3C4B69;
     height: 550px;
     margin-top: 25px;
     display: flex;
+    background: linear-gradient(45deg, #3C4B69, #5A6B8F, #2A3B59, #7A8FBF);
+    background-size: 400% 400%;
+    animation: gradientAnimation 12s infinite ease-in-out;
 }
+
 .container_intro{
     margin-left: 20%;  
     margin-top: 30px;
