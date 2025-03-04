@@ -268,7 +268,7 @@ header {
     margin-top: 50px;
 }
 .popular_product_block{
-    margin-top: 150px;
+    margin-top: 100px;
     background-color: #F3E5D8;
     width: 60%;
     height: 400px;
@@ -323,7 +323,7 @@ header {
 }
 .action_block {
     background-color: #F97E07;
-    width: 60%;
+    width: 50%;
     height: 400px;
     margin-top: 150px;
     border-radius: 10px;
@@ -333,9 +333,9 @@ header {
     animation: pulse 2s infinite ease-in-out;
 }
 .action_block img {
-    height: 540px;
+    height: 440px;
     position: absolute;
-    top: -150px;
+    top: -100px;
 }
 .action_text_block{
     margin-right: 10%;
@@ -411,6 +411,7 @@ header {
     margin-top: 50px;
     width: 100%;
     display: flex;
+    margin-bottom: 50px;
 }
 .second_line a{
     text-decoration: none;
