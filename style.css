@@ -602,3 +602,12 @@ footer {
   height: 500px;
   margin-top: 25px;
 }
+
+/* catalog */
+.catalog_container {
+  width: 60%;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 50px;
+  gap: 50px;
+}
