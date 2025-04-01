@@ -1,14 +1,35 @@
+<?php
+require 'config.php'; // Подключение к БД
+
+$category_id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+// Получаем название категории
+$category_sql = "SELECT name FROM categories WHERE id = ?";
+$stmt = $conn->prepare($category_sql);
+$stmt->bind_param("i", $category_id);
+$stmt->execute();
+$category_result = $stmt->get_result();
+$category = $category_result->fetch_assoc();
+
+// Получаем список запчастей
+$parts_sql = "SELECT name, price, image_path, applicability, availability FROM parts WHERE category_id = ?";
+$stmt = $conn->prepare($parts_sql);
+$stmt->bind_param("i", $category_id);
+$stmt->execute();
+$parts_result = $stmt->get_result();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Каталог</title>
+    <title>Категория</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
 </head>
 <body>
-  <header>
+<header>
         <div class="adress_header">
             <img src="img/geo1.png" alt="">
             <a href="#">г.Тверь ТПЗ Боровлево-1 стр.4</a>
@@ -63,58 +84,26 @@
 
   <div class="content">
     <div class="container_heading_content">
-        <p>Все категории</p>
+        <p><?= htmlspecialchars($category['name'] ?? 'Категория не найдена') ?></p> 
         <h1>Интернет-магазин T-PARTS</h1>
     </div>
-    <div class="catalog_container">
-    <?php
-      require 'config.php'; // Подключение к БД
 
-      $sql = "SELECT id, name, image_path FROM categories ORDER BY name ASC";
-      $result = $conn->query($sql);
-    ?>
-      <?php while ($row = $result->fetch_assoc()): ?>
-        <div class="catalog_block">
-          <a href="categories.php?id=<?= $row['id'] ?>" class="product_cart">
-            <img src="<?= $row['image_path'] ?>" alt="<?= htmlspecialchars($row['name']) ?>">
-            <p><?= htmlspecialchars($row['name']) ?></p>
-          </a>
-        </div>
-      <?php endwhile; ?>
-    </div>
+    <table class="parts_table">
+        <tbody>
+            <?php while ($part = $parts_result->fetch_assoc()): ?>
+                <tr>
+                    <td><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="50"></td>
+                    <td><?= htmlspecialchars($part['name']) ?></td>
+                    <td><?= htmlspecialchars($part['price']) ?> ₽</td>
+                    <td><?= htmlspecialchars($part['applicability']) ?></td>
+                    <td style="color: <?= $part['availability'] === 'В наличии' ? 'green' : 'red' ?>;">
+                        <?= htmlspecialchars($part['availability']) ?>
+                    </td>
+                    <td><button class="add-to-cart">Добавить в корзину</button></td>
+                </tr>
+            <?php endwhile; ?>
+        </tbody>
+    </table>
   </div>
-
-  <footer>
-        <div class="footer_block">
-            <div class="footer_info_block">
-                <p class="footer_title">Адрес:</p>
-                <p class="footer_text">Тверская область, Калининский муниципальный округ, торгово-промышленная зона Боровлёво-1, с4</p>
-
-                <p class="footer_title">Номер телефона:</p>
-                <p class="footer_text">
-                    +7 909 267 0401
-                    <br>
-                    +7 909 267 0402
-                    <br>
-                    +7 909 267 0403
-                    <br>
-                    +7 (4822) 22-38-79
-                </p>
-
-                <p class="footer_title">График работы:</p>
-                <p class="footer_text">
-                    ПН-ВС: <br>
-                    09:00–21:00
-                </p>
-            </div>
-            <div class="footer_href_block">
-                <p class="footer_title">Полезные ссылки:</p>
-                <a href="https://autopremium-tank.ru" class="footer_text">Официальный дилер TANK в Твери</a>
-                <a href="https://tank.ru" class="footer_text">Офицальный сайт TANK</a>
-                <a href="#" class="footer_text">Автосервис TANK</a>
-            </div>
-            <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Abdf9bd6a194711bfb99b10395e8f217040bf9db9dbcc46aad19420ac28304fff&amp;source=constructor" class="index_map" frameborder="0"></iframe>
-        </div>
-    </footer>
 </body>
 </html>

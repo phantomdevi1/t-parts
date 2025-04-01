@@ -82,6 +82,7 @@ header {
   transition: background 0.3s;
   display: flex;
   align-items: center;
+  margin-left: 25px;
 }
 .catalog-btn img {
   margin-left: 12px;
@@ -610,4 +611,9 @@ footer {
   flex-wrap: wrap;
   margin-top: 50px;
   gap: 50px;
+}
+
+.parts_table {
+  width: 72%;
+  margin-top: 50px;
 }
