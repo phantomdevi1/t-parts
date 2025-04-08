@@ -1,3 +1,9 @@
+<?php
+session_start();
+$is_logged_in = isset($_SESSION['user_id']);
+require 'config.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +29,6 @@
                 <button class="catalog-btn">Каталог <img src="img/chevron-right.png" alt=""></button>
                     <div class="dropdown-menu">
                         <?php
-                        require 'config.php';
 
                         $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
                         $result = $conn->query($sql_categories);
@@ -57,6 +62,7 @@
 
             <a href="#" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="#" class="icon-link"><img src="img/stroller.png" alt=""></a>
+            <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
             </div>
         </div>
   </header>

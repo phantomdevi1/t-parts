@@ -1,3 +1,9 @@
+<?php
+session_start();
+$is_logged_in = isset($_SESSION['user_id']);
+require 'config.php';
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +29,6 @@
                 <button class="catalog-btn">Каталог <img src="img/chevron-right.png" alt=""></button>
                     <div class="dropdown-menu">
                         <?php
-                        require 'config.php';
 
                         $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
                         $result = $conn->query($sql_categories);
@@ -58,8 +63,9 @@
             </button>
             
 
-            <a href="#" class="icon-link"><img src="img/car.png" alt=""></a>
+            <a href="#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="#" class="icon-link"><img src="img/stroller.png" alt=""></a>
+            <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
             </div>
         </div>
     </header>
@@ -92,30 +98,30 @@
         </div>
 
         <div class="popular_product_block">
-            <p>популярные категории</p>
+            <p>Популярные категории</p>
             <div class="popular_product_container">
-                <a href="suspension.html" class="product_cart">
+                <a href="categories.php?id=4" class="product_cart">
                     <img src="img/amort.png" alt="">
                     <p>Комплектующие подвески</p>
                 </a>
                 <div class="vertical"></div>
-                <a href="fluids.html" class="product_cart">
+                <a href="categories.php?id=8" class="product_cart">
                     <img src="img/antifriz.png" alt="">
                     <p>Автомобильные жидкости</p>
                 </a>
                 <div class="vertical"></div>
-                <a href="brakes.html" class="product_cart">
+                <a href="categories.php?id=3" class="product_cart">
                     <img src="img/disk.png" alt="">
                     <p>Тормозная система</p>
                 </a>
                 <div class="vertical"></div>
-                <a href="batteries.html" class="product_cart">
+                <a href="categories.php?id=11" class="product_cart">
                     <img src="img/accum.png" alt="">
                     <p>Автомобильные аккумуляторы</p>
                 </a>
             </div>
-            
         </div>
+
 
         <div class="action_block">
             <img src="img/oil.png" alt="">
@@ -130,7 +136,7 @@
         <div class="present_block">
             <div class="first_line">
                 <img src="img/т300i.png" alt="" class="present_wowimg">
-                <div class="first_line_car">
+                <div class="first_line_car" id="carsindex">
                     <p>Автомобили</p>
                     <hr class="hr_first_car">
                     <a href="">TANK 300</a>
@@ -141,22 +147,22 @@
                     <hr class="hr_first_car">
                     <a href="">TANK 400</a>
                 </div>
-                <a href="" class="present_product_block">
+                <a href="categories.php?id=7" class="present_product_block">
                     <img src="img/dopimg.png" alt="">
                     <p>Акссесуары</p>
                 </a>
             </div>
             <img class="present_wowbigimg" src="img/tank500.png" alt="">
             <div class="second_line">
-                <a href="" class="second_line_first">
+                <a href="categories.php?id=6" class="second_line_first">
                     <img src="img/lamp.png" alt="">
                     <p>Лампочки</p>
                 </a>
-                <a href="" class="second_line_second">
+                <a href="categories.php?id=10" class="second_line_second">
                     <img src="img/hotwheal.png" alt="" class="">
                     <p>Литые диски</p>
                 </a>
-                <a href="" class="second_line_third">
+                <a href="categories.php?id=12" class="second_line_third">
                     <img src="img/wheels.png" alt="" >
                     <p>Автомобильная резина</p>
                 </a>
