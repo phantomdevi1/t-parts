@@ -2,6 +2,19 @@
 session_start();
 $is_logged_in = isset($_SESSION['user_id']);
 require 'config.php';
+$cart_image = 'img/stroller.png'; // Значок по умолчанию
+if ($is_logged_in) {
+    $user_id = $_SESSION['user_id'];
+    $sql_cart_check = "SELECT COUNT(*) as count FROM cart WHERE user_id = ?";
+    $stmt = $conn->prepare($sql_cart_check);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $cart_result = $stmt->get_result()->fetch_assoc();
+
+    if ($cart_result['count'] > 0) {
+        $cart_image = 'img/cart_full.png'; // Изменённый значок
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -14,15 +27,16 @@ require 'config.php';
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
 </head>
 <body>
-  <header>
+<header>
         <div class="adress_header">
             <img src="img/geo1.png" alt="">
-            <a href="#">г.Тверь ТПЗ Боровлево-1 стр.4</a>
+            <a href="https://yandex.ru/maps/10819/tver-oblast/house/torgovo_promyshlennaya_zona_borovlyovo_1_s4/Z0wYfwdnS0UAQFtsfXt4cHxjYA==/?ll=35.907207%2C56.791004&z=16" target="_blank">г.Тверь ТПЗ Боровлево-1 стр.4</a>
+            <a href="tel:+7 (4822) 22-38-79" class="header_phone">+7 (4822) 22-38-79</a>
         </div>
        <div class="block_header_background">
         <div class="block_header">
             
-            <img src="img/favicon.png" alt="" class="logo_header">
+            <a href="index.php" style="height: 40px;"><img src="img/favicon.png" alt="" class="logo_header"></a>
             <a href="index.php" class="text_logo">T-PARTS</a>
 
             <div class="catalog-container">
@@ -55,17 +69,20 @@ require 'config.php';
                     </div>
             </div>
 
+
+
             <input type="search" class="search-input" placeholder="Артикул или номер детали">
             <button type="submit" class="search-btn">
                 Найти <img src="img/search.png" alt="">
-            </button>           
+            </button>
+            
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
-            <a href="cart.php" class="icon-link"><img src="img/stroller.png" alt=""></a>
+            <a href="cart.php" class="icon-link"><img src="<?= $cart_image ?>" alt=""></a>
             <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
             </div>
         </div>
-  </header>
+    </header>
 
   <div class="content">
     <div class="container_heading_content">

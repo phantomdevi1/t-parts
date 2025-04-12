@@ -2,39 +2,33 @@
 require 'config.php';
 session_start();
 
-// Если пользователь уже авторизован, перенаправляем на главную страницу
+
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Получаем данные из формы
-    $username = $_POST['username'];  // Логин (может быть номером телефона или email)
-    $password = $_POST['password'];  // Пароль
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
     // Проверка на пустые поля
     if (empty($username) || empty($password)) {
         $error_message = "Пожалуйста, введите логин и пароль.";
     } else {
-        // Подготовка запроса для проверки логина и пароля
         $sql = "SELECT id, password FROM users WHERE phone = ? OR email = ?";
         $stmt = $conn->prepare($sql);
 
-        // Важно: передаем два параметра в bind_param
-        $stmt->bind_param("ss", $username, $username);  // "ss" — два строковых параметра
+        $stmt->bind_param("ss", $username, $username); 
 
         $stmt->execute();
         $result = $stmt->get_result();
 
         if ($result->num_rows > 0) {
             $user = $result->fetch_assoc();
-            
-            // Проверка пароля без хеширования
             if ($password === $user['password']) {
-                // Если пароль верный, создаем сессию
                 $_SESSION['user_id'] = $user['id'];
-                header("Location: account.php"); // Перенаправление на главную страницу
+                header("Location: account.php");
                 exit();
             } else {
                 $error_message = "Неверный пароль.";
@@ -44,6 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -57,18 +52,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <header>
-    <div class="adress_header">
-        <img src="img/geo1.png" alt="">
-        <a href="#">г.Тверь ТПЗ Боровлево-1 стр.4</a>
-    </div>
-    <div class="block_header_background">
+        <div class="adress_header">
+            <img src="img/geo1.png" alt="">
+            <a href="https://yandex.ru/maps/10819/tver-oblast/house/torgovo_promyshlennaya_zona_borovlyovo_1_s4/Z0wYfwdnS0UAQFtsfXt4cHxjYA==/?ll=35.907207%2C56.791004&z=16" target="_blank">г.Тверь ТПЗ Боровлево-1 стр.4</a>
+            <a href="tel:+7 (4822) 22-38-79" class="header_phone">+7 (4822) 22-38-79</a>
+        </div>
+       <div class="block_header_background">
         <div class="block_header">
-            <img src="img/favicon.png" alt="" class="logo_header">
+            
+            <a href="index.php" style="height: 40px;"><img src="img/favicon.png" alt="" class="logo_header"></a>
             <a href="index.php" class="text_logo">T-PARTS</a>
 
             <div class="catalog-container">
                 <button class="catalog-btn">Каталог <img src="img/chevron-right.png" alt=""></button>
-                <div class="dropdown-menu">
+                    <div class="dropdown-menu">
                         <?php
 
                         $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
@@ -96,30 +93,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     </div>
             </div>
 
+
+
             <input type="search" class="search-input" placeholder="Артикул или номер детали">
             <button type="submit" class="search-btn">
                 Найти <img src="img/search.png" alt="">
             </button>
+            
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="cart.php" class="icon-link"><img src="img/stroller.png" alt=""></a>
-            <a href="profile.php" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
 <div class="content">
     <div class="login_container">
         <h1>Авторизация</h1>
         <?php
         if (isset($error_message)) {
-            echo "<p style='color: red;'>$error_message</p>";
+            echo "<p style='color: white;'>$error_message</p>";
         }
         ?>
     
 
     <form method="post" class="login-form">
-        <input type="text" id="username" name="username" required placeholder="Логин">
+        <input type="text" id="username" name="username" required placeholder="E-mail или телефон">
         <input type="password" id="password" name="password" required placeholder="Пароль">
 
         <button class="login_btn" type="submit">Войти</button>

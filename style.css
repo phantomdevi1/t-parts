@@ -14,10 +14,13 @@ body {
   font-family: "Play", sans-serif;
 }
 
-/* Header */
+/* header */
 header {
   width: 100%;
   background-color: #384865;
+  position: sticky;
+  top: 0;
+  z-index: 999;
 }
 .adress_header {
   height: 50px;
@@ -39,6 +42,9 @@ header {
   text-decoration: none;
   transition: color 0.3s;
   margin-left: 0px;
+}
+.header_phone {
+  margin-right: 0px;
 }
 
 .adress_header a:hover {
@@ -553,10 +559,11 @@ header {
   display: flex;
 }
 .one_news_block {
-  background-color: #a1b5c8;
+  background-color: #f3e5d8;
   width: 22%;
   min-height: 300px;
   text-align: left;
+  border: 2px solid #a1b5c8;
 }
 .one_news_block-title {
   margin-top: 10px;
@@ -645,7 +652,7 @@ footer {
   border-radius: 10px;
   padding: 10px 20px 10px 20px;
   cursor: pointer;
-  margin-left: 15px;
+  margin-right: 0px;
   transition: 0.5s;
 }
 .add-to-cart:hover {
@@ -670,6 +677,13 @@ footer {
   margin-left: 5px;
   color: #d76a04;
 }
+.categories_form {
+  display: flex;
+}
+.numb_categories_input {
+  border: none;
+  align-items: center;
+}
 
 /* login */
 .login_container {
@@ -692,19 +706,20 @@ footer {
 .login-form input {
   width: 80%;
   font-size: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 5px;
   border: 1px solid black;
   margin-top: 30px;
 }
 .login_btn {
+  width: 80%;
   cursor: pointer;
   margin-top: 50px;
   font-size: 24px;
   color: #fff;
-  padding: 10px 20px 10px 20px;
+  padding: 5px 20px 5px 20px;
   transition: 0.5s;
-  border-radius: 10px;
+  border-radius: 5px;
   background-color: #f97e07;
   border: none;
 }
@@ -730,10 +745,28 @@ footer {
 .registr-form input {
   width: 100%;
   font-size: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   padding: 5px;
   border: 1px solid black;
   margin-top: 30px;
+  padding: 5px 0px 5px 5px;
+}
+.registration_btn {
+  width: 102%;
+  cursor: pointer;
+  margin-top: 30px;
+  font-size: 24px;
+  color: #fff;
+  padding: 5px 20px 5px 20px;
+  transition: 0.5s;
+  border-radius: 5px;
+  background-color: #f97e07;
+  border: none;
+}
+.registration_btn:hover {
+  transition: 0.5s;
+  background-color: #fff;
+  color: #f97e07;
 }
 
 /* cart */

@@ -1,12 +1,14 @@
 <?php
 require 'config.php';
 session_start();
-
 // Если пользователь уже авторизован, перенаправляем
 if (isset($_SESSION['user_id'])) {
     header("Location: index.php");
     exit();
 }
+
+
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name     = trim($_POST['name']);
@@ -32,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $insert_sql = "INSERT INTO users (username, password, email, phone, is_admin) VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($insert_sql);
-            $stmt->bind_param("sssss", $name, $email, $phone, $password, $isAdmin);
+            $stmt->bind_param("sssss", $name, $password, $email, $phone, $isAdmin);
 
             if ($stmt->execute()) {
                 $_SESSION['user_id'] = $stmt->insert_id;
@@ -57,52 +59,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
 <header>
-    <div class="adress_header">
-        <img src="img/geo1.png" alt="">
-        <a href="#">г.Тверь ТПЗ Боровлево-1 стр.4</a>
-    </div>
-    <div class="block_header_background">
+        <div class="adress_header">
+            <img src="img/geo1.png" alt="">
+            <a href="https://yandex.ru/maps/10819/tver-oblast/house/torgovo_promyshlennaya_zona_borovlyovo_1_s4/Z0wYfwdnS0UAQFtsfXt4cHxjYA==/?ll=35.907207%2C56.791004&z=16" target="_blank">г.Тверь ТПЗ Боровлево-1 стр.4</a>
+            <a href="tel:+7 (4822) 22-38-79" class="header_phone">+7 (4822) 22-38-79</a>
+        </div>
+       <div class="block_header_background">
         <div class="block_header">
-            <img src="img/favicon.png" alt="" class="logo_header">
+            
+            <a href="index.php" style="height: 40px;"><img src="img/favicon.png" alt="" class="logo_header"></a>
             <a href="index.php" class="text_logo">T-PARTS</a>
 
             <div class="catalog-container">
                 <button class="catalog-btn">Каталог <img src="img/chevron-right.png" alt=""></button>
-                <div class="dropdown-menu">
-                    <?php
-                    $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
-                    $result = $conn->query($sql_categories);
-                    $selected_categories = [];
-                    $used_letters = [];
+                    <div class="dropdown-menu">
+                        <?php
 
-                    while ($category = $result->fetch_assoc()) {
-                        $first_letter = mb_substr($category['name'], 0, 1, 'UTF-8');
-                        if (!isset($used_letters[$first_letter])) {
-                            $selected_categories[] = $category;
-                            $used_letters[$first_letter] = true;
+                        $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
+                        $result = $conn->query($sql_categories);
+
+                        $selected_categories = [];
+                        $used_letters = [];
+
+                        while ($category = $result->fetch_assoc()) {
+                            $first_letter = mb_substr($category['name'], 0, 1, 'UTF-8');
+                            if (!isset($used_letters[$first_letter])) {
+                                $selected_categories[] = $category;
+                                $used_letters[$first_letter] = true;
+                            }
+                            if (count($selected_categories) >= 5) {
+                                break;
+                            }
                         }
-                        if (count($selected_categories) >= 5) break;
-                    }
 
-                    foreach ($selected_categories as $category) {
-                        echo '<a href="categories.php?id=' . $category['id'] . '">' . htmlspecialchars($category['name']) . '</a>';
-                    }
-                    ?>
-                    <a href="catalog.php">Все категории</a>
-                </div>
+                        foreach ($selected_categories as $category) {
+                            echo '<a href="categories.php?id=' . $category['id'] . '">' . htmlspecialchars($category['name']) . '</a>';
+                        }
+                        ?>
+                        <a href="catalog.php">Все категории</a>
+                    </div>
             </div>
+
+
 
             <input type="search" class="search-input" placeholder="Артикул или номер детали">
             <button type="submit" class="search-btn">
                 Найти <img src="img/search.png" alt="">
             </button>
+            
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="cart.php" class="icon-link"><img src="img/stroller.png" alt=""></a>
-            <a href="profile.php" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
 <div class="content">
     <div class="login_container">
@@ -115,7 +126,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <input type="text" name="phone" required placeholder="Номер телефона">
             <input type="password" name="password" required placeholder="Пароль">
             <input type="password" name="confirm_password" required placeholder="Подтверждение пароля">
-            <button class="login_btn" type="submit">Зарегистрироваться</button>
+            <button class="registration_btn" type="submit">Зарегистрироваться</button>
         </form>
 
         <p class="registr_login_block">Уже есть аккаунт? <a href="login.php">Войти</a></p>
