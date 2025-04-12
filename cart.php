@@ -198,7 +198,7 @@ while ($row = $result->fetch_assoc()) {
 
         <h3>Итого: <?= $total ?> ₽</h3>
         <form method="post">
-            <button type="submit" name="checkout" class="checkout-btn">Оформить заказ</button>
+            <button type="submit" name="checkout" class="add_cart_btn">Оформить заказ</button>
         </form>
     <?php endif; ?>
 </div>

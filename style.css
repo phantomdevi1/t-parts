@@ -743,3 +743,19 @@ footer {
   margin-top: 50px;
   width: 70%;
 }
+.add_cart_btn {
+  cursor: pointer;
+  margin-top: 50px;
+  font-size: 24px;
+  color: #fff;
+  padding: 10px 20px 10px 20px;
+  transition: 0.5s;
+  border-radius: 10px;
+  background-color: #f97e07;
+  border: 1px solid #f97e07;
+}
+.add_cart_btn:hover {
+  transition: 0.5s;
+  background-color: #fff;
+  color: #f97e07;
+}
