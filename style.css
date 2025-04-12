@@ -349,6 +349,8 @@ header {
   overflow: visible;
   animation: pulse 2s infinite ease-in-out;
   margin-bottom: 100px;
+  text-decoration: none;
+  color: #fff;
 }
 .action_block img {
   height: 135%;
@@ -364,6 +366,7 @@ header {
 .action_text_block h3 {
   font-size: 70px;
   margin-top: 25px;
+  color: black;
 }
 .action_name {
   margin-top: 20px;

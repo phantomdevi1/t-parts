@@ -2,6 +2,8 @@
 require 'config.php';
 session_start();
 
+$is_logged_in = isset($_SESSION['user_id']); // ← Добавлено
+
 $cart_image = 'img/stroller.png'; // Значок по умолчанию
 if ($is_logged_in) {
     $user_id = $_SESSION['user_id'];
@@ -15,6 +17,7 @@ if ($is_logged_in) {
         $cart_image = 'img/cart_full.png'; // Изменённый значок
     }
 }
+
 // Проверка авторизации
 if (!isset($_SESSION['user_id'])) {
     header("Location: login.php");

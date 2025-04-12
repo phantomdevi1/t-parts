@@ -95,7 +95,7 @@ if ($is_logged_in) {
             <div class="text_collab_block">
                 <p>TANK SERVICE</p>
                 <span>профессиональный сервис официального обслуживания для вашего TANK</span>
-                <a href="" class="">ЗАПИСАТЬСЯ НА РЕМОНТ</a>
+                <a href="http://sfchizhmai.temp.swtest.ru" class="" target="_blank">ЗАПИСАТЬСЯ НА РЕМОНТ</a>
             </div>
         </div>
 
@@ -139,7 +139,7 @@ if ($is_logged_in) {
         </div>
 
 
-        <div class="action_block">
+        <a href="categories.php?id=8" class="action_block">
             <img src="img/oil.png" alt="">
             <div class="action_text_block">
                 <h3>АКЦИЯ!</h3>
@@ -147,7 +147,7 @@ if ($is_logged_in) {
                 <p class="action_description">Объем: 5,6л</p>
                 <p class="action_price">Цена: <span>5000</span></p>                
             </div>
-        </div>
+        </a>
 
         <div class="present_block">
             <div class="first_line">
