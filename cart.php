@@ -80,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
                 $item_stmt->bind_param("iiid", $order_id, $item['part_id'], $item['quantity'], $item['price']);
                 $item_stmt->execute();
             }
+            exit();
 
             // Очистка корзины пользователя
             $delete_sql = "DELETE FROM cart WHERE user_id = ?";
