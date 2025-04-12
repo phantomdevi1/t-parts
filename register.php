@@ -8,8 +8,6 @@ if (isset($_SESSION['user_id'])) {
 }
 
 
-
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name     = trim($_POST['name']);
     $email    = trim($_POST['email']);
@@ -30,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            $error_message = "Пользователь с таким email или телефоном уже существует.";
+            $error_message = "Ой-ой. Такой пользователь уже есть.";
         } else {
             $insert_sql = "INSERT INTO users (username, password, email, phone, is_admin) VALUES (?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($insert_sql);
@@ -118,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <div class="content">
     <div class="login_container">
         <h1>Регистрация</h1>
-        <?php if (isset($error_message)) echo "<p style='color: red;'>$error_message</p>"; ?>
+        <?php if (isset($error_message)) echo "<p style='color: #fff;'>$error_message</p>"; ?>
 
         <form method="post" class="registr-form">
             <input type="text" name="name" required placeholder="Имя">
