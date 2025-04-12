@@ -22,81 +22,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     $cart_data = [];
     $total_price = 0;
 
+    // Проходим по товарам в корзине и вычисляем общую стоимость
     while ($row = $result->fetch_assoc()) {
-        // Получаем цену каждой детали
         $part_id = $row['part_id'];
         $quantity = $row['quantity'];
+        
+        // Получаем цену каждой детали
         $part_query = $conn->prepare("SELECT price FROM parts WHERE id = ?");
         $part_query->bind_param("i", $part_id);
         $part_query->execute();
         $part_result = $part_query->get_result()->fetch_assoc();
-        $price = $part_result['price'];
-        $total_price += $price * $quantity;
+        
+        if ($part_result) {
+            $price = $part_result['price'];
+            $total_price += $price * $quantity;
 
-        $cart_data[] = [
-            'part_id' => $part_id,
-            'quantity' => $quantity,
-            'price' => $price
-        ];
+            $cart_data[] = [
+                'part_id' => $part_id,
+                'quantity' => $quantity,
+                'price' => $price
+            ];
+        } else {
+            die("Ошибка: Деталь с ID $part_id не найдена в таблице parts.");
+        }
     }
 
     if (!empty($cart_data)) {
-        // Вставка заказа
+        // Вставка заказа в таблицу orders
         $status = 'В обработке';
         $order_sql = "INSERT INTO orders (user_id, status, total_price, created_at) VALUES (?, ?, ?, NOW())";
         $stmt = $conn->prepare($order_sql);
         $stmt->bind_param("isd", $user_id, $status, $total_price);
-        $stmt->execute();
+        if ($stmt->execute()) {
+            $order_id = $stmt->insert_id;
 
-        // Получаем ID нового заказа
-        $order_id = $stmt->insert_id;
-        if (!$order_id) {
-            die("Ошибка получения ID заказа.");
-        }
-
-        // Вставка позиций заказа
-        $item_stmt = $conn->prepare("INSERT INTO order_items (order_id, part_id, quantity, price) VALUES (?, ?, ?, ?)");
-        if (!$item_stmt) {
-            die("Ошибка подготовки вставки в order_items: " . $conn->error);
-        }
-
-        // Привязка параметров
-        $order_id_int = (int)$order_id;
-        $part_id = 0;
-        $quantity = 0;
-        $price = 0.0;
-
-        // bind_param привязывается по ссылке к переменным
-        $item_stmt->bind_param("iiid", $order_id_int, $part_id, $quantity, $price);
-
-        foreach ($cart_data as $item) {
-            // Просто присваиваем значения в переменные
-            $part_id = (int)$item['part_id'];
-            $quantity = (int)$item['quantity'];
-            $price = (float)$item['price'];
-
-            // Выполняем вставку позиции
-            if (!$item_stmt->execute()) {
-                die("❌ Ошибка добавления позиции заказа: " . $item_stmt->error);
+            // Вставка позиций в таблицу order_items
+            $item_sql = "INSERT INTO order_items (order_id, part_id, quantity, price) VALUES (?, ?, ?, ?)";
+            $item_stmt = $conn->prepare($item_sql);
+            foreach ($cart_data as $item) {
+                $item_stmt->bind_param("iiid", $order_id, $item['part_id'], $item['quantity'], $item['price']);
+                $item_stmt->execute();
             }
-        }
+            exit();      
+             // Очистка корзины пользователя
+            $delete_sql = "DELETE FROM cart WHERE user_id = ?";
+            $delete_stmt = $conn->prepare($delete_sql);
+            $delete_stmt->bind_param("i", $user_id);
+            $delete_stmt->execute();
 
-        // Очистка корзины
-        $delete_stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
-        if (!$delete_stmt) {
-            die("Ошибка подготовки удаления корзины: " . $conn->error);
-        }
-        $delete_stmt->bind_param("i", $user_id);
-        $delete_stmt->execute();
-
-        // Перенаправление на страницу аккаунта
-        header("Location: account.php");
-        exit();  // Завершаем выполнение скрипта после редиректа
-    }
+            // Перезагружаем страницу после оформления заказа
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+            } else {
+            die("Ошибка оформления заказа: " . $stmt->error);
+            }
+            } else {
+            die("Корзина пуста. Невозможно оформить заказ.");
+            }     
 }
-
-
-
 
 // Получение товаров из корзины для отображения
 $sql = "SELECT c.id AS cart_id, p.id AS part_id, p.name, p.price, p.image_path, c.quantity
