@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                 Найти <img src="img/search.png" alt="">
             </button>
 
-            <a href="#" class="icon-link"><img src="img/car.png" alt=""></a>
+            <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="#" class="icon-link"><img src="img/stroller.png" alt=""></a>
             <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
         </div>
@@ -145,10 +145,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
         <tbody>
             <?php while ($part = $parts_result->fetch_assoc()): ?>
                 <tr>
-                    <td><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="50"></td>
-                    <td><?= htmlspecialchars($part['name']) ?></td>
-                    <td><?= htmlspecialchars($part['price']) ?> ₽</td>
-                    <td><?= htmlspecialchars($part['applicability']) ?></td>
+                    <td><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="150"></td>
+                    <td class="description_title_td"><?= htmlspecialchars($part['name']) ?>
+                    <div class="description_td">
+                    <p><?= htmlspecialchars($part['price']) ?> ₽</p>
+                    <p><?= htmlspecialchars($part['applicability']) ?></p>
+                    </div>
+                </td>
                     <td style="color: <?= $part['availability'] === 'В наличии' ? 'green' : 'red' ?>;">
                         <?= htmlspecialchars($part['availability']) ?>
                     </td>
@@ -158,7 +161,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
                             <input type="number" name="quantity" min="1"
                                    max="<?= isset($part['stock']) && $part['stock'] > 0 ? $part['stock'] : 1 ?>"
                                    value="1" required>
-                            <button type="submit" name="add_to_cart" class="add-to-cart">Добавить в корзину</button>
+                            <button type="submit" name="add_to_cart" class="add-to-cart">B корзину</button>
                         </form>
                     </td>
                 </tr>

@@ -73,7 +73,7 @@ if ($is_logged_in) {
             </button>
             
 
-            <a href="#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
+            <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="#" class="icon-link"><img src="img/stroller.png" alt=""></a>
             <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
             </div>
