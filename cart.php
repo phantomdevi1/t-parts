@@ -10,6 +10,23 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = $_SESSION['user_id'];
 
+// --- Удаление товара из корзины при POST-запросе ---
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
+    $cart_id = $_POST['remove_item'];
+
+    // Удаляем товар из корзины
+    $delete_sql = "DELETE FROM cart WHERE id = ? AND user_id = ?";
+    $delete_stmt = $conn->prepare($delete_sql);
+    $delete_stmt->bind_param("ii", $cart_id, $user_id);
+    if ($delete_stmt->execute()) {
+        // Перезагружаем страницу после удаления
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
+    } else {
+        die("Ошибка при удалении товара из корзины: " . $delete_stmt->error);
+    }
+}
+
 // --- Оформление заказа при POST-запросе ---
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     // Получаем корзину
@@ -26,13 +43,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     while ($row = $result->fetch_assoc()) {
         $part_id = $row['part_id'];
         $quantity = $row['quantity'];
-        
+
         // Получаем цену каждой детали
         $part_query = $conn->prepare("SELECT price FROM parts WHERE id = ?");
         $part_query->bind_param("i", $part_id);
         $part_query->execute();
         $part_result = $part_query->get_result()->fetch_assoc();
-        
+
         if ($part_result) {
             $price = $part_result['price'];
             $total_price += $price * $quantity;
@@ -63,8 +80,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
                 $item_stmt->bind_param("iiid", $order_id, $item['part_id'], $item['quantity'], $item['price']);
                 $item_stmt->execute();
             }
-            exit();      
-             // Очистка корзины пользователя
+
+            // Очистка корзины пользователя
             $delete_sql = "DELETE FROM cart WHERE user_id = ?";
             $delete_stmt = $conn->prepare($delete_sql);
             $delete_stmt->bind_param("i", $user_id);
@@ -73,13 +90,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
             // Перезагружаем страницу после оформления заказа
             header("Location: " . $_SERVER['PHP_SELF']);
             exit();
-            } else {
+        } else {
             die("Ошибка оформления заказа: " . $stmt->error);
-            }
-            } else {
-            die("Корзина пуста. Невозможно оформить заказ.");
-            }     
+        }
+    } else {
+        die("Корзина пуста. Невозможно оформить заказ.");
+    }
 }
+
 
 // Получение товаров из корзины для отображения
 $sql = "SELECT c.id AS cart_id, p.id AS part_id, p.name, p.price, p.image_path, c.quantity
@@ -99,6 +117,7 @@ while ($row = $result->fetch_assoc()) {
     $total += $row['price'] * $row['quantity'];
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -174,6 +193,13 @@ while ($row = $result->fetch_assoc()) {
                         </td>
                         <td><?= htmlspecialchars($item['quantity']) ?> шт.</td>
                         <td><?= $item['price'] * $item['quantity'] ?> ₽</td>
+                        <!-- Кнопка удаления товара из корзины -->
+                        <td>
+                            <form method="post" style="display:inline;">
+                                <input type="hidden" name="remove_item" value="<?= $item['cart_id'] ?>">
+                                <button type="submit" class="delete_cart_btn">х</button>
+                            </form>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

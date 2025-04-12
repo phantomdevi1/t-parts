@@ -759,3 +759,15 @@ footer {
   background-color: #fff;
   color: #f97e07;
 }
+.delete_cart_btn {
+  color: #941211;
+  background: none;
+  border: none;
+  font-size: 24px;
+  transition: 0.5s;
+  cursor: pointer;
+}
+.delete_cart_btn:hover {
+  transform: scale(1.1);
+  transition: 0.5s;
+}
