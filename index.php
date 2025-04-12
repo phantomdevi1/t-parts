@@ -155,14 +155,15 @@ if ($is_logged_in) {
                 <div class="first_line_car" id="carsindex">
                     <p>Автомобили</p>
                     <hr class="hr_first_car">
-                    <a href="">TANK 300</a>
+                    <a href="model_parts.php?model=TANK%20300">TANK 300</a>
                     <hr class="hr_first_car">
-                    <a href="">TANK 500</a>
+                    <a href="model_parts.php?model=TANK%20500">TANK 500</a>
                     <hr class="hr_first_car">
-                    <a href="">TANK 700</a>
+                    <a href="model_parts.php?model=TANK%20700">TANK 700</a>
                     <hr class="hr_first_car">
-                    <a href="">TANK 400</a>
+                    <a href="model_parts.php?model=TANK%20400">TANK 400</a>
                 </div>
+
                 <a href="categories.php?id=7" class="present_product_block">
                     <img src="img/dopimg.png" alt="">
                     <p>Акссесуары</p>
