@@ -33,7 +33,7 @@ if ($is_logged_in) {
         <div class="block_header">
             
             <img src="img/favicon.png" alt="" class="logo_header">
-            <a href="#" class="text_logo">T-PARTS</a>
+            <a href="index.php" class="text_logo">T-PARTS</a>
 
             <div class="catalog-container">
                 <button class="catalog-btn">Каталог <img src="img/chevron-right.png" alt=""></button>
@@ -74,7 +74,7 @@ if ($is_logged_in) {
             
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
-            <a href="#" class="icon-link"><img src="img/stroller.png" alt=""></a>
+            <a href="cart.php" class="icon-link"><img src="img/stroller.png" alt=""></a>
             <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
             </div>
         </div>
