@@ -107,21 +107,22 @@ if ($is_logged_in) {
 
                         $selected_categories = [];
                         $used_letters = [];
-
-                        while ($category = $result->fetch_assoc()) {
-                            $first_letter = mb_substr($category['name'], 0, 1, 'UTF-8');
+                        
+                        while ($cat_row = $result->fetch_assoc()) {
+                            $first_letter = mb_substr($cat_row['name'], 0, 1, 'UTF-8');
                             if (!isset($used_letters[$first_letter])) {
-                                $selected_categories[] = $category;
+                                $selected_categories[] = $cat_row;
                                 $used_letters[$first_letter] = true;
                             }
                             if (count($selected_categories) >= 5) {
                                 break;
                             }
                         }
-
-                        foreach ($selected_categories as $category) {
-                            echo '<a href="categories.php?id=' . $category['id'] . '">' . htmlspecialchars($category['name']) . '</a>';
+                        
+                        foreach ($selected_categories as $cat) {
+                            echo '<a href="categories.php?id=' . $cat['id'] . '">' . htmlspecialchars($cat['name']) . '</a>';
                         }
+                        
                         ?>
                         <a href="catalog.php">Все категории</a>
                     </div>
