@@ -153,8 +153,39 @@ $orders = $conn->query("
               <td><button type="submit">Обновить</button></td>
             </form>
           </tr>
+
+          <?php
+          // Состав заказа
+          $order_id = $order['id'];
+          $item_stmt = $conn->prepare("
+              SELECT p.name, oi.quantity, p.price
+              FROM order_items oi
+              JOIN parts p ON p.id = oi.part_id
+              WHERE oi.order_id = ?
+          ");
+          $item_stmt->bind_param("i", $order_id);
+          $item_stmt->execute();
+          $items_result = $item_stmt->get_result();
+          ?>
+
+          <tr class="order_items_row">
+            <td colspan="6" style="background-color: #f9f9f9; font-size: 14px;">
+              <strong>Состав заказа:</strong>
+              <ul style="margin: 5px 0; padding-left: 20px;">
+                <?php while ($item = $items_result->fetch_assoc()): ?>
+                  <li>
+                    <?= htmlspecialchars($item['name']) ?> —
+                    <?= $item['quantity'] ?> шт.
+                    (<?= number_format($item['price'], 2, ',', ' ') ?> ₽/шт)
+                  </li>
+                <?php endwhile; ?>
+              </ul>
+            </td>
+          </tr>
+
         <?php endwhile; ?>
       </tbody>
+
     </table>
   </div>
 </div>
