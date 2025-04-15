@@ -253,9 +253,9 @@ if ($is_logged_in) {
             </div>
             <div class="footer_href_block">
                 <p class="footer_title">Полезные ссылки:</p>
-                <a href="https://autopremium-tank.ru" class="footer_text">Официальный дилер TANK в Твери</a>
-                <a href="https://tank.ru" class="footer_text">Офицальный сайт TANK</a>
-                <a href="http://sfchizhmai.temp.swtest.ru" class="footer_text">Автосервис TANK</a>
+                <a href="https://autopremium-tank.ru" target="_blank" class="footer_text">Официальный дилер TANK в Твери</a>
+                <a href="https://tank.ru" target="_blank" class="footer_text">Офицальный сайт TANK</a>
+                <a href="http://sfchizhmai.temp.swtest.ru" target="_blank" class="footer_text">Автосервис TANK</a>
             </div>
             <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Abdf9bd6a194711bfb99b10395e8f217040bf9db9dbcc46aad19420ac28304fff&amp;source=constructor" class="index_map" frameborder="0"></iframe>
         </div>
