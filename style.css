@@ -127,10 +127,13 @@ header {
 .catalog-container:hover .dropdown-menu {
   display: block;
 }
-
+.search-form {
+  display: flex;
+  width: 70%;
+}
 .search-input {
   height: 42px;
-  width: 570px;
+  width: 100%;
   padding: 0 15px;
   border: 1px solid #ccc;
   border-radius: 10px;

@@ -73,9 +73,10 @@ if ($is_logged_in) {
 
 
 
-            <input type="search" class="search-input" placeholder="Артикул или номер детали">
-            <button type="submit" class="search-btn">
-                Найти <img src="img/search.png" alt="">
+            <form action="search.php" method="get" class="search-form">
+                <input type="search" class="search-input" name="q" placeholder="Наименование детали">
+                <button type="submit" class="search-btn">Найти <img src="img/search.png" alt=""></button>
+            </form>
             </button>
             
 
