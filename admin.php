@@ -110,8 +110,8 @@ $orders = $conn->query("
 
     <h2>Добавить новость</h2>
     <form method="post" class="add_news_form">
-      <input type="text" name="add_news_title" placeholder="Заголовок" required>
-      <textarea name="add_news_content" placeholder="Текст новости" required></textarea>
+      <input type="text" name="news_title" placeholder="Заголовок" required>
+      <textarea name="news_content" placeholder="Текст новости" required></textarea>
       <button type="submit">Добавить</button>
     </form>
   </div>
