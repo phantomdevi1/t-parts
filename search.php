@@ -65,6 +65,7 @@ if ($is_logged_in) {
     <meta charset="UTF-8">
     <title>Результаты поиска</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
 </head>
 <body>
 <header>
@@ -126,11 +127,12 @@ if ($is_logged_in) {
     <div class="container_heading_content">
         <p>Результаты поиска по запросу: "<?= htmlspecialchars($q) ?>"</p>
         <h1>Интернет-магазин T-PARTS</h1>
+        <?php if (empty($search_results)): ?>
+          <p>Ничего не найдено.</p>
+        <?php else: ?>
     </div>
 
-      <?php if (empty($search_results)): ?>
-    <p>Ничего не найдено.</p>
-<?php else: ?>
+
     <table class="parts_table">
         <tbody>
             <?php foreach ($search_results as $part): ?>

@@ -67,6 +67,7 @@ if ($is_logged_in) {
     <meta charset="UTF-8">
     <title><?= htmlspecialchars($model) ?> – T-PARTS</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
 </head>
 <body>
 <header>
