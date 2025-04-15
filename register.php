@@ -104,7 +104,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="search" class="search-input" name="q" placeholder="Наименование детали">
                 <button type="submit" class="search-btn">Найти <img src="img/search.png" alt=""></button>
             </form>
-            </button>
             
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>

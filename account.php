@@ -2,7 +2,7 @@
 session_start();
 $is_logged_in = isset($_SESSION['user_id']);
 require 'config.php';
-$cart_image = 'img/stroller.png'; // Значок по умолчанию
+$cart_image = 'img/stroller.png';
 
 if ($is_logged_in) {
     $user_id = $_SESSION['user_id'];
@@ -110,7 +110,6 @@ if ($is_logged_in) {
                 <input type="search" class="search-input" name="q" placeholder="Наименование детали">
                 <button type="submit" class="search-btn">Найти <img src="img/search.png" alt=""></button>
             </form>
-            </button>
             
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>

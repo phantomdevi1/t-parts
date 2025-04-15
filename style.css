@@ -881,3 +881,41 @@ td {
 .order-summary th {
   background-color: #f4f4f4;
 }
+
+/* admin */
+.admin_text_logo {
+  font-size: 22px;
+  font-weight: bold;
+  text-decoration: none;
+  color: black;
+  white-space: nowrap;
+  margin-left: 0px;
+}
+.href_admin_account {
+  background-color: #941211;
+  border-radius: 10px;
+  padding: 10px 20px 10px 20px;
+  text-decoration: none;
+  color: #fff;
+  margin-right: 0px;
+}
+.admin_block {
+  margin-top: 50px;
+  display: flex;
+  width: 80%;
+  flex-direction: column;
+  align-items: center;
+  gap: 30px;
+}
+.add_news_form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 10px;
+}
+.add_news_title {
+  width: 60%;
+  border: 1px solid black;
+  font-size: 25px;
+  padding: 5px;
+}

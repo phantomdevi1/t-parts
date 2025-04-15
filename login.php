@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (empty($username) || empty($password)) {
         $error_message = "Пожалуйста, введите логин и пароль.";
     } else {
-        $sql = "SELECT id, password FROM users WHERE phone = ? OR email = ?";
+        $sql = "SELECT id, password, is_admin FROM users WHERE phone = ? OR email = ?";
         $stmt = $conn->prepare($sql);
 
         $stmt->bind_param("ss", $username, $username); 
@@ -28,9 +28,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $user = $result->fetch_assoc();
             if ($password === $user['password']) {
                 $_SESSION['user_id'] = $user['id'];
-                header("Location: account.php");
+                $_SESSION['is_admin'] = $user['is_admin'];
+            
+                if ($user['is_admin'] == 1) {
+                    header("Location: admin.php");
+                } else {
+                    header("Location: account.php");
+                }
                 exit();
-            } else {
+            }
+             else {
                 $error_message = "Неверный пароль.";
             }
         } else {
@@ -99,12 +106,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <input type="search" class="search-input" name="q" placeholder="Наименование детали">
                 <button type="submit" class="search-btn">Найти <img src="img/search.png" alt=""></button>
             </form>
-            </button>
             
 
             <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="cart.php" class="icon-link"><img src="img/stroller.png" alt=""></a>
-            <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            <a href="<?= isset($_SESSION['user_id']) ? ($_SESSION['is_admin'] == 1 ? 'admin.php' : 'account.php') : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+
             </div>
         </div>
     </header>
