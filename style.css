@@ -832,6 +832,9 @@ footer {
   margin-top: 50px;
   width: 70%;
 }
+.cart_title {
+  margin-bottom: 30px;
+}
 .add_cart_btn {
   cursor: pointer;
   margin-top: 50px;

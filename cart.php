@@ -39,6 +39,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
     }
 }
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_item_id'], $_POST['new_quantity'])) {
+    $cart_id = (int)$_POST['update_item_id'];
+    $new_quantity = max(1, (int)$_POST['new_quantity']);
+
+    $stmt = $conn->prepare("SELECT part_id FROM cart WHERE id = ? AND user_id = ?");
+    $stmt->bind_param("ii", $cart_id, $user_id);
+    $stmt->execute();
+    $res = $stmt->get_result()->fetch_assoc();
+
+    if ($res) {
+        $part_id = $res['part_id'];
+
+        $stmt = $conn->prepare("SELECT stock FROM parts WHERE id = ?");
+        $stmt->bind_param("i", $part_id);
+        $stmt->execute();
+        $part_data = $stmt->get_result()->fetch_assoc();
+
+        if ($part_data) {
+            if ($new_quantity <= $part_data['stock']) {
+                $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
+                $update_stmt->bind_param("iii", $new_quantity, $cart_id, $user_id);
+                $update_stmt->execute();
+            } else {
+                $_SESSION['qty_error'] = "На складе доступно только {$part_data['stock']} шт.";
+            }
+        }
+    }
+
+    header("Location: cart.php");
+    exit();
+}
+
+
 // Оформление заказа
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
     $sql = "SELECT part_id, quantity FROM cart WHERE user_id = ?";
@@ -54,13 +87,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
         $part_id = $row['part_id'];
         $quantity = $row['quantity'];
 
-        $part_query = $conn->prepare("SELECT price FROM parts WHERE id = ?");
+        $part_query = $conn->prepare("SELECT price, stock as stock FROM parts WHERE id = ?");
         $part_query->bind_param("i", $part_id);
         $part_query->execute();
         $part_result = $part_query->get_result()->fetch_assoc();
 
         if ($part_result) {
             $price = $part_result['price'];
+            $stock = $part_result['stock'];
+            if ($quantity > $stock) {
+                die("Ошибка: Недостаточное количество детали на складе для ID $part_id.");
+            }
             $total_price += $price * $quantity;
             $cart_data[] = [
                 'part_id' => $part_id,
@@ -76,41 +113,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
         $status = 'В обработке';
         $stmt = $conn->prepare("INSERT INTO orders (user_id, status, total_price, created_at) VALUES (?, ?, ?, NOW())");
         $stmt->bind_param("isd", $user_id, $status, $total_price);
-    
+
         if ($stmt->execute()) {
             $order_id = $stmt->insert_id;
-    
-            // Вставка данных в order_items
+
             foreach ($cart_data as $item) {
                 $part_id = $item['part_id'];
                 $quantity = $item['quantity'];
                 $price = $item['price'];
-    
+
                 $item_stmt = $conn->prepare("INSERT INTO order_items (order_id, part_id, quantity, price) VALUES (?, ?, ?, ?)");
                 if (!$item_stmt) {
-                    die("❌ Ошибка подготовки запроса в order_items: " . $conn->error);
+                    die("Ошибка подготовки запроса в order_items: " . $conn->error);
                 }
-    
                 $item_stmt->bind_param("iiid", $order_id, $part_id, $quantity, $price);
                 if (!$item_stmt->execute()) {
-                    die("❌ Ошибка вставки в order_items: " . $item_stmt->error);
+                    die("Ошибка вставки в order_items: " . $item_stmt->error);
                 }
+
+                // Обновить количество деталей на складе
+                $update_parts = $conn->prepare("UPDATE parts SET stock = GREATEST(stock - ?, 0) WHERE id = ?");
+                $update_parts->bind_param("ii", $quantity, $part_id);
+                $update_parts->execute();
             }
-    
-            // Очистка корзины
+
             $delete_stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
             $delete_stmt->bind_param("i", $user_id);
             $delete_stmt->execute();
-    
+
             header("Location: cart.php?success=1");
             exit();
         } else {
-            die("❌ Ошибка при создании заказа: " . $stmt->error);
+            die("Ошибка при создании заказа: " . $stmt->error);
         }
     } else {
-        die("⚠️ Корзина пуста. Невозможно оформить заказ.");
+        die("Корзина пуста. Невозможно оформить заказ.");
     }
-    
 }
 
 // Получение товаров из корзины
@@ -131,6 +169,7 @@ while ($row = $result->fetch_assoc()) {
     $total += $row['price'] * $row['quantity'];
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="ru">
@@ -193,15 +232,20 @@ while ($row = $result->fetch_assoc()) {
 </header>
 
 <div class="container_cart">
-    <h1>Корзина</h1>
+    <h1 class="cart_title">Корзина</h1>
 
     <?php if (isset($_GET['success'])): ?>
         <p class="success-msg">✅ Заказ успешно оформлен!</p>
     <?php endif; ?>
 
     <?php if (count($cart_items) === 0): ?>
-        <p>Ваша корзина пуста.</p>
+        <p class="cart_empty">Ваша корзина пуста.</p>
     <?php else: ?>
+        <?php if (isset($_SESSION['qty_error'])): ?>
+            <p class="error-msg" style="color:red; font-weight: bold;"><?= $_SESSION['qty_error'] ?></p>
+            <?php unset($_SESSION['qty_error']); ?>
+        <?php endif; ?>
+
         <table class="parts_table">
             <tbody>
                 <?php foreach ($cart_items as $item): ?>
@@ -213,7 +257,14 @@ while ($row = $result->fetch_assoc()) {
                                 <p><?= htmlspecialchars($item['price']) ?> ₽</p>
                             </div>
                         </td>
-                        <td><?= htmlspecialchars($item['quantity']) ?> шт.</td>
+                        <td>
+                            <form method="post" class="update-qty-form">
+                                <input type="hidden" name="update_item_id" value="<?= $item['cart_id'] ?>">
+                                <input type="number" name="new_quantity" value="<?= $item['quantity'] ?>" min="1" class="qty-input" style="width: 50px;">
+                                <button type="submit">OK</button>
+                            </form>
+                        </td>
+
                         <td><?= $item['price'] * $item['quantity'] ?> ₽</td>
                         <td>
                             <form method="post" style="display:inline;">
