@@ -646,6 +646,7 @@ footer {
 .description_td {
   display: flex;
   flex-direction: column;
+  margin-top: 15px;
 }
 .description_td p {
   margin-left: 0px;
@@ -677,6 +678,43 @@ footer {
   background-color: #fff;
   color: #fb8206;
   transition: 0.5s;
+}
+.categories_form_inline {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.numb_categories_input {
+  width: 60px;
+  padding: 4px;
+  font-size: 14px;
+}
+
+.price {
+  margin: 0;
+  font-size: 16px;
+}
+
+.promo-price {
+  color: red;
+  font-weight: bold;
+}
+
+.in-cart-btn {
+  background-color: #ccc;
+  color: #333;
+  border: none;
+  padding: 10px 20px 10px 20px;
+  cursor: default;
+}
+
+.quantity-label {
+  font-size: 14px;
+  font-style: italic;
+  margin-top: 5px;
+  color: #333;
 }
 
 /* categories */

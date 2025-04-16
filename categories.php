@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_to_cart'])) {
 }
 
 // Получаем список запчастей
-$parts_sql = "SELECT id, name, price, image_path, applicability, availability, stock FROM parts WHERE category_id = ?";
+$parts_sql = "SELECT id, name, price, image_path, applicability, availability, stock, promotion FROM parts WHERE category_id = ?";
 $stmt = $conn->prepare($parts_sql);
 $stmt->bind_param("i", $category_id);
 $stmt->execute();
@@ -119,17 +119,17 @@ if ($is_logged_in) {
                     $selected_categories = [];
                     $used_letters = [];
 
-                    while ($category = $result->fetch_assoc()) {
-                        $first_letter = mb_substr($category['name'], 0, 1, 'UTF-8');
+                    while ($dropdown_category = $result->fetch_assoc()) {
+                        $first_letter = mb_substr($dropdown_category['name'], 0, 1, 'UTF-8');
                         if (!isset($used_letters[$first_letter])) {
-                            $selected_categories[] = $category;
+                            $selected_categories[] = $dropdown_category;
                             $used_letters[$first_letter] = true;
                         }
                         if (count($selected_categories) >= 5) break;
                     }
-
-                    foreach ($selected_categories as $category) {
-                        echo '<a href="categories.php?id=' . $category['id'] . '">' . htmlspecialchars($category['name']) . '</a>';
+                    
+                    foreach ($selected_categories as $cat) {
+                        echo '<a href="categories.php?id=' . $cat['id'] . '">' . htmlspecialchars($cat['name']) . '</a>';
                     }
                     ?>
                     <a href="catalog.php">Все категории</a>
@@ -169,7 +169,6 @@ if ($is_logged_in) {
                 <td><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="150"></td>
                 <td class="description_title_td"><?= htmlspecialchars($part['name']) ?>
                     <div class="description_td">
-                        <p><?= htmlspecialchars($part['price']) ?> ₽</p>
                         <p><?= htmlspecialchars($part['applicability']) ?></p>
                     </div>
                 </td>
@@ -177,17 +176,32 @@ if ($is_logged_in) {
                     <?= htmlspecialchars($part['availability']) ?>
                 </td>
                 <td style="text-align: end;">
-                    <?php if (array_key_exists($part['id'], $parts_in_cart)): ?>
+                <?php if (array_key_exists($part['id'], $parts_in_cart)): ?>
+                    <div class="categories_form_inline">                        
+                    <input class="numb_categories_input" type="number" name="quantity" min="1"
+                            max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" required>
+                        <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
+                            <?= number_format($part['price'], 2, '.', ' ') ?> ₽
+                        </p>
                         <button class="in-cart-btn" disabled>В корзине</button>
-                    <?php else: ?>
-                        <form method="post" class="categories_form">
-                            <input type="hidden" name="part_id" value="<?= $part['id'] ?>">
-                            <input class="numb_categories_input" type="number" name="quantity" min="1"
-                                   max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" required>
-                            <button type="submit" name="add_to_cart" class="add-to-cart">В корзину</button>
-                        </form>
-                    <?php endif; ?>
+                    </div>
+                <?php else: ?>
+                    <form method="post" class="categories_form_inline">
+                        <input type="hidden" name="part_id" value="<?= $part['id'] ?>">
+
+                        <input class="numb_categories_input" type="number" name="quantity" min="1"
+                            max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" required>
+
+                        <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
+                            <?= number_format($part['price'], 2, '.', ' ') ?> ₽
+                        </p>
+
+                        <button type="submit" name="add_to_cart" class="add-to-cart">В корзину</button>
+                    </form>
+                <?php endif; ?>
                 </td>
+
+
             </tr>
         <?php endwhile; ?>
         </tbody>
