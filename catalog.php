@@ -31,7 +31,7 @@ if ($is_logged_in) {
         <div class="adress_header">
             <img src="img/geo1.png" alt="">
             <a href="https://yandex.ru/maps/10819/tver-oblast/house/torgovo_promyshlennaya_zona_borovlyovo_1_s4/Z0wYfwdnS0UAQFtsfXt4cHxjYA==/?ll=35.907207%2C56.791004&z=16" target="_blank">г.Тверь ТПЗ Боровлево-1 стр.4</a>
-            <a href="tel:+7 (4822) 22-38-79" class="header_phone">+7 (4822) 22-38-79</a>
+            <a href="tel:+7(4822)79-79-97" class="header_phone">+7 (4822) 79-79-97</a>
         </div>
        <div class="block_header_background">
         <div class="block_header">

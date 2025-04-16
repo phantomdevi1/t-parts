@@ -650,6 +650,18 @@ footer {
 .description_td p {
   margin-left: 0px;
 }
+.in-cart-btn {
+  background-color: #ccc;
+  color: #555;
+  padding: 10px 15px;
+  border: none;
+  cursor: not-allowed;
+  font-weight: bold;
+  margin-right: 0px;
+  font-size: 18px;
+  border-radius: 10px;
+}
+
 .add-to-cart {
   border: 1px solid #fb8206;
   background-color: #fb8206;
