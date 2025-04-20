@@ -17,6 +17,17 @@ if ($is_logged_in) {
     }
 }
 
+// Извлекаем 5 последних новостей
+$sql = "SELECT title, content, DATE_FORMAT(created_at, '%d.%m.%Y') as formatted_date FROM news ORDER BY created_at DESC LIMIT 5";
+$result = $conn->query($sql);
+
+// Создаём массив для хранения новостей
+$news = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $news[] = $row;
+    }
+}
 
 ?>
 <!DOCTYPE html>
@@ -149,9 +160,17 @@ if ($is_logged_in) {
             </div>
         </a>
 
-        <div class="present_block">
-            <div class="first_line">
-                <img src="img/т300i.png" alt="" class="present_wowimg">
+            <div class="present_block">
+                <div class="first_line">
+                <!-- Первая новость -->
+                <?php if (!empty($news[0])): ?>
+                    <div class="news-item_rectangle">
+                        <h4 class="news_index_title"><?= htmlspecialchars($news[0]['title']) ?></h4>
+                        <p class="news_index_date"><?= $news[0]['formatted_date'] ?></p>
+                        <p class="news_index_content"><?= htmlspecialchars($news[0]['content']) ?></p>
+                    </div>
+                <?php endif; ?>
+
                 <div class="first_line_car" id="carsindex">
                     <p>Автомобили</p>
                     <hr class="hr_first_car">
@@ -169,35 +188,50 @@ if ($is_logged_in) {
                     <p>Акссесуары</p>
                 </a>
             </div>
-            <img class="present_wowbigimg" src="img/tank500.png" alt="">
-            <div class="second_line">
-                <a href="categories.php?id=6" class="second_line_first">
-                    <img src="img/lamp.png" alt="">
-                    <p>Лампочки</p>
-                </a>
-                <a href="categories.php?id=10" class="second_line_second">
-                    <img src="img/hotwheal.png" alt="" class="">
-                    <p>Литые диски</p>
-                </a>
-                <a href="categories.php?id=12" class="second_line_third">
-                    <img src="img/wheels.png" alt="" >
-                    <p>Автомобильная резина</p>
-                </a>
-            </div>
-           
-                <img src="img/stocks.png" alt="" width="80%"style="margin-top: 50px; margin-bottom: 50px">
-           
-            <div class="second_line">
-               
-                    <img src="img/t300.png" alt="" class="present_wowimg">
 
-                    <img src="img/т500.png" alt="" class="present_wowimg_center">
-
-                    <img src="img/t700.png" alt="" class="present_wowimg_right">
-                
-                
+            <div class="news_block_cub">
+            <?php if (!empty($news[1])): ?>
+                <div class="second_line">
+                    <div class="news-item">
+                        <h4 class="news_index_title"><?= htmlspecialchars($news[1]['title']) ?></h4>
+                        <p class="news_index_date"><?= $news[1]['formatted_date'] ?></p>
+                        <p class="news_index_content"><?= htmlspecialchars($news[1]['content']) ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
             </div>
+
+            <img src="img/stocks.png" alt="" width="80%" style="margin-top: 50px; margin-bottom: 50px">
+            <div class="under_news_index">
+                <!-- Третья новость -->
+                <?php if (!empty($news[2])): ?>
+                    <div class="news-item_rectangle">
+                        <h4 class="news_index_title"><?= htmlspecialchars($news[2]['title']) ?></h4>
+                        <p class="news_index_date"><?= $news[2]['formatted_date'] ?></p>
+                        <p class="news_index_content"><?= htmlspecialchars($news[2]['content']) ?></p>
+                    </div>
+                <?php endif; ?>
+
+                <!-- Четвёртая новость -->
+                <?php if (!empty($news[3])): ?>
+                    <div class="news-item_center">
+                        <h4 class="news_index_title"><?= htmlspecialchars($news[3]['title']) ?></h4>
+                        <p class="news_index_date"><?= $news[3]['formatted_date'] ?></p>
+                        <p class="news_index_content"><?= htmlspecialchars($news[3]['content']) ?></p>
+                    </div>
+                <?php endif; ?>
+                <!-- Пятая новость -->
+                <?php if (!empty($news[4])): ?>
+                    <div class="news-item_right">
+                        <h4 class="news_index_title"><?= htmlspecialchars($news[4]['title']) ?></h4>
+                        <p class="news_index_date"><?= $news[4]['formatted_date'] ?></p>
+                        <p class="news_index_content"><?= htmlspecialchars($news[4]['content']) ?></p>
+                    </div>
+                <?php endif; ?>
+            </div>
+
         </div>
+
 
         <?php
             include 'config.php';
@@ -212,18 +246,6 @@ if ($is_logged_in) {
             $result = $conn->query($sql);
             ?>
 
-            <div class="news_index">
-                <p class="news_title">Новости</p>
-                <div class="news_block">
-                    <?php while ($row = $result->fetch_assoc()): ?>
-                        <div class="one_news_block">
-                            <p class="one_news_block-title"><?php echo htmlspecialchars($row['title']); ?></p>
-                            <p class="one_news_block-date"><?php echo $row['formatted_date']; ?></p>
-                            <p class="one_news_block-text"><?php echo htmlspecialchars($row['content']); ?></p>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-            </div>
 
         <?php $conn->close(); ?>
 
