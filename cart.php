@@ -5,25 +5,22 @@ session_start();
 $is_logged_in = isset($_SESSION['user_id']);
 $cart_image = 'img/stroller.png';
 
-if ($is_logged_in) {
-    $user_id = $_SESSION['user_id'];
-    $sql_cart_check = "SELECT COUNT(*) as count FROM cart WHERE user_id = ?";
-    $stmt = $conn->prepare($sql_cart_check);
-    $stmt->bind_param("i", $user_id);
-    $stmt->execute();
-    $cart_result = $stmt->get_result()->fetch_assoc();
-
-    if ($cart_result['count'] > 0) {
-        $cart_image = 'img/cart_full.png';
-    }
-}
-
-if (!isset($_SESSION['user_id'])) {
+if (!$is_logged_in) {
     header("Location: login.php");
     exit();
 }
 
 $user_id = $_SESSION['user_id'];
+
+// Проверка наличия товаров в корзине
+$sql_cart_check = "SELECT COUNT(*) as count FROM cart WHERE user_id = ?";
+$stmt = $conn->prepare($sql_cart_check);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$cart_result = $stmt->get_result()->fetch_assoc();
+if ($cart_result['count'] > 0) {
+    $cart_image = 'img/cart_full.png';
+}
 
 // Удаление товара из корзины
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
@@ -39,6 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['remove_item'])) {
     }
 }
 
+// Обновление количества
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_item_id'], $_POST['new_quantity'])) {
     $cart_id = (int)$_POST['update_item_id'];
     $new_quantity = max(1, (int)$_POST['new_quantity']);
@@ -56,21 +54,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_item_id'], $_P
         $stmt->execute();
         $part_data = $stmt->get_result()->fetch_assoc();
 
-        if ($part_data) {
-            if ($new_quantity <= $part_data['stock']) {
-                $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
-                $update_stmt->bind_param("iii", $new_quantity, $cart_id, $user_id);
-                $update_stmt->execute();
-            } else {
-                $_SESSION['qty_error'] = "На складе доступно только {$part_data['stock']} шт.";
-            }
+        if ($part_data && $new_quantity <= $part_data['stock']) {
+            $update_stmt = $conn->prepare("UPDATE cart SET quantity = ? WHERE id = ? AND user_id = ?");
+            $update_stmt->bind_param("iii", $new_quantity, $cart_id, $user_id);
+            $update_stmt->execute();
+        } else {
+            $_SESSION['qty_error'] = "На складе доступно только {$part_data['stock']} шт.";
         }
     }
 
     header("Location: cart.php");
     exit();
 }
-
 
 // Оформление заказа
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
@@ -87,59 +82,54 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
         $part_id = $row['part_id'];
         $quantity = $row['quantity'];
 
-        $part_query = $conn->prepare("SELECT price, stock as stock FROM parts WHERE id = ?");
+        $part_query = $conn->prepare("SELECT price, stock FROM parts WHERE id = ?");
         $part_query->bind_param("i", $part_id);
         $part_query->execute();
         $part_result = $part_query->get_result()->fetch_assoc();
 
-        if ($part_result) {
-            $price = $part_result['price'];
-            $stock = $part_result['stock'];
-            if ($quantity > $stock) {
-                die("Ошибка: Недостаточное количество детали на складе для ID $part_id.");
-            }
-            $total_price += $price * $quantity;
-            $cart_data[] = [
-                'part_id' => $part_id,
-                'quantity' => $quantity,
-                'price' => $price
-            ];
-        } else {
-            die("Ошибка: Деталь с ID $part_id не найдена.");
+        if (!$part_result || $quantity > $part_result['stock']) {
+            die("Ошибка: Недостаточное количество детали на складе для ID $part_id.");
         }
+
+        $total_price += $part_result['price'] * $quantity;
+        $cart_data[] = ['part_id' => $part_id, 'quantity' => $quantity, 'price' => $part_result['price']];
     }
 
     if (!empty($cart_data)) {
         $status = 'В обработке';
         $stmt = $conn->prepare("INSERT INTO orders (user_id, status, total_price, created_at) VALUES (?, ?, ?, NOW())");
         $stmt->bind_param("isd", $user_id, $status, $total_price);
-
         if ($stmt->execute()) {
             $order_id = $stmt->insert_id;
 
             foreach ($cart_data as $item) {
-                $part_id = $item['part_id'];
-                $quantity = $item['quantity'];
-                $price = $item['price'];
-
                 $item_stmt = $conn->prepare("INSERT INTO order_items (order_id, part_id, quantity, price) VALUES (?, ?, ?, ?)");
-                if (!$item_stmt) {
-                    die("Ошибка подготовки запроса в order_items: " . $conn->error);
-                }
-                $item_stmt->bind_param("iiid", $order_id, $part_id, $quantity, $price);
-                if (!$item_stmt->execute()) {
-                    die("Ошибка вставки в order_items: " . $item_stmt->error);
-                }
+                $item_stmt->bind_param("iiid", $order_id, $item['part_id'], $item['quantity'], $item['price']);
+                $item_stmt->execute();
 
-                // Обновить количество деталей на складе
                 $update_parts = $conn->prepare("UPDATE parts SET stock = GREATEST(stock - ?, 0) WHERE id = ?");
-                $update_parts->bind_param("ii", $quantity, $part_id);
+                $update_parts->bind_param("ii", $item['quantity'], $item['part_id']);
                 $update_parts->execute();
             }
 
             $delete_stmt = $conn->prepare("DELETE FROM cart WHERE user_id = ?");
             $delete_stmt->bind_param("i", $user_id);
             $delete_stmt->execute();
+
+            // определяем ориентировочное время доставки
+            $delivery_time = 'В течение дня';
+            foreach ($cart_data as $item) {
+                $stmt_part = $conn->prepare("SELECT availability FROM parts WHERE id = ?");
+                $stmt_part->bind_param("i", $item['part_id']);
+                $stmt_part->execute();
+                $part = $stmt_part->get_result()->fetch_assoc();
+
+                if ($part && $part['availability'] === 'Под заказ') {
+                    $delivery_time = '2–3 дня';
+                    break;
+                }
+            }
+            $_SESSION['delivery_time'] = $delivery_time;
 
             header("Location: cart.php?success=1");
             exit();
@@ -152,7 +142,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['checkout'])) {
 }
 
 // Получение товаров из корзины
-$sql = "SELECT c.id AS cart_id, p.id AS part_id, p.name, p.price, p.image_path, c.quantity
+$sql = "SELECT c.id AS cart_id, p.id AS part_id, p.name, p.price, p.image_path, c.quantity, p.availability
         FROM cart c
         JOIN parts p ON c.part_id = p.id
         WHERE c.user_id = ?";
@@ -170,7 +160,6 @@ while ($row = $result->fetch_assoc()) {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -187,55 +176,69 @@ while ($row = $result->fetch_assoc()) {
             <a href="https://yandex.ru/maps/10819/tver-oblast/house/torgovo_promyshlennaya_zona_borovlyovo_1_s4/Z0wYfwdnS0UAQFtsfXt4cHxjYA==/?ll=35.907207%2C56.791004&z=16" target="_blank">г.Тверь ТПЗ Боровлево-1 стр.4</a>
             <a href="tel:+7(4822)79-79-97" class="header_phone">+7 (4822) 79-79-97</a>
         </div>
-    <div class="block_header_background">
+       <div class="block_header_background">
         <div class="block_header">
+            
             <a href="index.php" style="height: 40px;"><img src="img/favicon.png" alt="" class="logo_header"></a>
             <a href="index.php" class="text_logo">T-PARTS</a>
 
             <div class="catalog-container">
                 <button class="catalog-btn">Каталог <img src="img/chevron-right.png" alt=""></button>
-                <div class="dropdown-menu">
-                    <?php
-                    $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
-                    $result = $conn->query($sql_categories);
+                    <div class="dropdown-menu">
+                        <?php
 
-                    $selected_categories = [];
-                    $used_letters = [];
+                        $sql_categories = "SELECT id, name FROM categories ORDER BY name ASC";
+                        $result = $conn->query($sql_categories);
 
-                    while ($category = $result->fetch_assoc()) {
-                        $first_letter = mb_substr($category['name'], 0, 1, 'UTF-8');
-                        if (!isset($used_letters[$first_letter])) {
-                            $selected_categories[] = $category;
-                            $used_letters[$first_letter] = true;
+                        $selected_categories = [];
+                        $used_letters = [];
+
+                        while ($category = $result->fetch_assoc()) {
+                            $first_letter = mb_substr($category['name'], 0, 1, 'UTF-8');
+                            if (!isset($used_letters[$first_letter])) {
+                                $selected_categories[] = $category;
+                                $used_letters[$first_letter] = true;
+                            }
+                            if (count($selected_categories) >= 5) {
+                                break;
+                            }
                         }
-                        if (count($selected_categories) >= 5) break;
-                    }
 
-                    foreach ($selected_categories as $category) {
-                        echo '<a href="categories.php?id=' . $category['id'] . '">' . htmlspecialchars($category['name']) . '</a>';
-                    }
-                    ?>
-                    <a href="catalog.php">Все категории</a>
-                </div>
+                        foreach ($selected_categories as $category) {
+                            echo '<a href="categories.php?id=' . $category['id'] . '">' . htmlspecialchars($category['name']) . '</a>';
+                        }
+                        ?>
+                        <a href="catalog.php">Все категории</a>
+                    </div>
             </div>
+
+
 
             <form action="search.php" method="get" class="search-form">
                 <input type="search" class="search-input" name="q" placeholder="Наименование детали">
                 <button type="submit" class="search-btn">Найти <img src="img/search.png" alt=""></button>
             </form>
+            
 
-            <a href="index.php#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
+            <a href="#carsindex" class="icon-link"><img src="img/car.png" alt=""></a>
             <a href="cart.php" class="icon-link"><img src="<?= $cart_image ?>" alt=""></a>
-            <a href="<?= $is_logged_in ? 'account.php' : 'login.php' ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            <a href="<?php echo $is_logged_in ? 'account.php' : 'login.php'; ?>" class="icon-link"><img src="img/profile_icon.png" alt=""></a>
+            </div>
         </div>
-    </div>
-</header>
+    </header>
 
 <div class="container_cart">
     <h1 class="cart_title">Корзина</h1>
 
     <?php if (isset($_GET['success'])): ?>
-        <p class="success-msg">✅ Заказ успешно оформлен!</p>
+        <p class="success-msg">✅ Заказ успешно оформлен!
+            <br>Ваш заказ будет ждать вас по адресу: г.Тверь ТПЗ Боровлево-1 стр.4
+            <br>
+            <?php if (isset($_SESSION['delivery_time'])): ?>
+                Ориентировочное время доставки: <strong><?= htmlspecialchars($_SESSION['delivery_time']) ?></strong>
+                <?php unset($_SESSION['delivery_time']); ?>
+            <?php endif; ?>
+        </p>
     <?php endif; ?>
 
     <?php if (count($cart_items) === 0): ?>
