@@ -882,6 +882,19 @@ footer {
   flex-direction: column;
   gap: 20px;
 }
+.user_info_table {
+  border-collapse: collapse;
+  width: 100%;
+  max-width: 600px;
+}
+
+.user_info_table th,
+.user_info_table td {
+  padding: 8px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+}
+
 .href_personal_account {
   background-color: #941211;
   border-radius: 10px;

@@ -123,10 +123,25 @@ if ($is_logged_in) {
   <div class="user_block">
     <h1>Личный кабинет</h1>
     <div class="user_info">
-      <p><strong>Имя:</strong> <?= htmlspecialchars($user_info['username']) ?></p>
-      <p><strong>Email:</strong> <?= htmlspecialchars($user_info['email']) ?></p>
-      <p><strong>Телефон:</strong> <?= htmlspecialchars($user_info['phone']) ?></p>
-      <p><strong>Количество заказов:</strong> <?= $orders_count ?></p>
+    <table class="user_info_table" style="border-collapse: collapse; width: 100%; max-width: 700px;">
+      <tr>
+        <td style="padding: 8px;">Имя</td>
+        <td style="padding: 8px;"><?= htmlspecialchars($user_info['username']) ?></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px;">Email</td>
+        <td style="padding: 8px;"><?= htmlspecialchars($user_info['email']) ?></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px;">Телефон</td>
+        <td style="padding: 8px;"><?= htmlspecialchars($user_info['phone']) ?></td>
+      </tr>
+      <tr>
+        <td style="padding: 8px;">Количество заказов</td>
+        <td style="padding: 8px;"><?= $orders_count ?></td>
+      </tr>
+    </table>
+
     </div>
 
     <a class="href_personal_account" href="?logout=1">Выйти</a>

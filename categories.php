@@ -186,18 +186,15 @@ if ($is_logged_in) {
                         <button class="in-cart-btn" disabled>В корзине</button>
                     </div>
                 <?php else: ?>
-                    <form method="post" class="categories_form_inline">
+                    <form method="post" class="categories_form_inline" onsubmit="return validateStock(this, <?= $part['stock'] ?>)">
                         <input type="hidden" name="part_id" value="<?= $part['id'] ?>">
-
-                        <input class="numb_categories_input" type="number" name="quantity" min="1"
-                            max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" required>
-
+                        <input class="numb_categories_input" type="number" name="quantity" min="1" value="1" required>
                         <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
                             <?= number_format($part['price'], 2, '.', ' ') ?> ₽
                         </p>
-
                         <button type="submit" name="add_to_cart" class="add-to-cart">В корзину</button>
                     </form>
+
                 <?php endif; ?>
                 </td>
 
@@ -207,5 +204,16 @@ if ($is_logged_in) {
         </tbody>
     </table>
 </div>
+<script>
+function validateStock(form, stock) {
+    const quantity = parseInt(form.quantity.value);
+    if (quantity > stock) {
+        alert("Нельзя заказать больше, чем есть на складе");
+        return false; // Остановить отправку формы
+    }
+    return true;
+}
+</script>
+
 </body>
 </html>
