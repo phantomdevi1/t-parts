@@ -1013,7 +1013,7 @@ td {
   border: none;
   padding: 5px 10px 5px 10px;
   font-size: 20px;
-  border-radius: 10px;
+  border-radius: 5px;
   cursor: pointer;
   transition: background 0.3s;
   display: flex;
@@ -1025,4 +1025,54 @@ td {
   background-color: #fff;
   color: #fb8206;
   border: 1px solid #fb8206;
+}
+.admin_href_block {
+  width: 50%;
+  margin-top: 50px;
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+}
+.admin_href_btn {
+  width: 100%;
+  background-color: #f97e07;
+  color: #fff;
+  font-size: 22px;
+  font-weight: bold;
+  text-decoration: none;
+  border: 1px solid #f97e07;
+  border-radius: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  cursor: pointer;
+  transition: 0.5s;
+}
+.admin_href_btn:hover {
+  background-color: #fff;
+  color: #f97e07;
+  transition: 0.5s;
+}
+.admin_table_title {
+  margin-top: 50px;
+}
+.form-group {
+  margin-top: 30px;
+  text-align: center;
+}
+.new_part_btn {
+  width: 80%;
+  cursor: pointer;
+  font-size: 24px;
+  color: #fff;
+  padding: 5px 20px 5px 20px;
+  transition: 0.5s;
+  border-radius: 5px;
+  background-color: #f97e07;
+  border: none;
+  border: 1px solid #f97e07;
+}
+.new_part_btn:hover {
+  transition: 0.5s;
+  background-color: #fff;
+  color: #f97e07;
 }

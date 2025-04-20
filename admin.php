@@ -117,7 +117,11 @@ $orders = $conn->query("
   </div>
 
   <div class="user_orders">
-    <h2>Все заказы</h2>
+    <div class="admin_href_block">
+      <a href="full_parts.php" class="admin_href_btn">Все товары</a>
+      <a href="new_part.php" class="admin_href_btn">Добавить товар</a>
+    </div>
+    <h2 class="admin_table_title">Все заказы</h2>
     <table class="table_account">
       <thead>
         <tr>
