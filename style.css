@@ -552,20 +552,25 @@ header {
   border: 2px solid #f3e5d8;
   display: flex;
   flex-direction: column;
-  text-align: center;
   align-items: center;
+  text-align: center;
   margin-left: 0px;
   padding: 10px;
 }
 .news_index_title {
-  margin-top: 15px;
+  margin-top: 10px;
   font-size: 24px;
 }
 .news_index_date {
   color: grey;
 }
 .news_index_content {
-  margin-top: 10px;
+  margin-top: 15%;
+  text-align: justify;
+}
+.news_index_content-cub {
+  margin-top: 7%;
+  text-align: justify;
 }
 .news_block_cub {
   margin-top: 50px;
@@ -575,6 +580,8 @@ header {
   align-items: center;
   padding: 10px;
   text-align: center;
+  width: 100%;
+  height: 300px;
 }
 .under_news_index {
   display: flex;

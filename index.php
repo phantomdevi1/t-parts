@@ -188,16 +188,13 @@ if ($result->num_rows > 0) {
                     <p>Акссесуары</p>
                 </a>
             </div>
-
+            <!-- Вторая новость -->
             <div class="news_block_cub">
             <?php if (!empty($news[1])): ?>
-                <div class="second_line">
-                    <div class="news-item">
                         <h4 class="news_index_title"><?= htmlspecialchars($news[1]['title']) ?></h4>
                         <p class="news_index_date"><?= $news[1]['formatted_date'] ?></p>
-                        <p class="news_index_content"><?= htmlspecialchars($news[1]['content']) ?></p>
-                    </div>
-                </div>
+                        <p class="news_index_content-cub"><?= htmlspecialchars($news[1]['content']) ?></p>
+                    
             <?php endif; ?>
             </div>
 
