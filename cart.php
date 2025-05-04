@@ -249,36 +249,35 @@ while ($row = $result->fetch_assoc()) {
             <?php unset($_SESSION['qty_error']); ?>
         <?php endif; ?>
 
-        <table class="parts_table">
-            <tbody>
-                <?php foreach ($cart_items as $item): ?>
-                    <tr>
-                        <td><img src="<?= htmlspecialchars($item['image_path']) ?>" alt="" width="150"></td>
-                        <td class="description_title_td">
-                            <?= htmlspecialchars($item['name']) ?>
-                            <div class="description_td">
-                                <p><?= htmlspecialchars($item['price']) ?> ₽</p>
-                            </div>
-                        </td>
-                        <td>
-                            <form method="post" class="update-qty-form">
-                                <input type="hidden" name="update_item_id" value="<?= $item['cart_id'] ?>">
-                                <input type="number" name="new_quantity" value="<?= $item['quantity'] ?>" min="1" class="qty-input" style="width: 50px;">
-                                <button type="submit">OK</button>
-                            </form>
-                        </td>
+    <?php foreach ($cart_items as $item): ?>
+        <div class="cart_item">
+            <div class="cart_item_image">
+                <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="" width="150">
+            </div>
+            <div class="cart_item_info">
+                <div class="description_title_td"><?= htmlspecialchars($item['name']) ?></div>
+                <div class="description_td"><?= htmlspecialchars($item['price']) ?> ₽</div>
+            </div>
+            <div class="cart_item_qty">
+                <form method="post" class="update-qty-form">
+                    <input type="hidden" name="update_item_id" value="<?= $item['cart_id'] ?>">
+                    <input type="number" name="new_quantity" value="<?= $item['quantity'] ?>" min="1" class="qty-input" style="width: 50px;">
+                    <button type="submit">OK</button>
+                </form>
+            </div>
+            <div class="cart_item_total">
+                <?= $item['price'] * $item['quantity'] ?> ₽
+            </div>
+            <div class="cart_item_delete">
+                <form method="post" style="display:inline;">
+                    <input type="hidden" name="remove_item" value="<?= $item['cart_id'] ?>">
+                    <button type="submit" class="delete_cart_btn">х</button>
+                </form>
+            </div>
+        </div>
+    <?php endforeach; ?>
 
-                        <td><?= $item['price'] * $item['quantity'] ?> ₽</td>
-                        <td>
-                            <form method="post" style="display:inline;">
-                                <input type="hidden" name="remove_item" value="<?= $item['cart_id'] ?>">
-                                <button type="submit" class="delete_cart_btn">х</button>
-                            </form>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+
 
         <h3>Итого: <?= $total ?> ₽</h3>
         <form method="post">
