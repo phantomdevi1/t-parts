@@ -1214,11 +1214,15 @@ td {
   .footer_text {
     font-size: 18px;
   }
+
+  .parts_table {
+    width: 90%;
+  }
 }
 
 @media screen and (width < 1120px) {
   .product_cart {
-    width: 200px;
+    width: auto;
   }
   .present_block {
     width: 95%;
@@ -1309,6 +1313,18 @@ td {
   .vertical {
     height: 150px;
   }
+  .parts_table {
+    width: 100%;
+  }
+}
+@media screen and (width < 850px) {
+  .add-to-cart {
+    padding: 5px 10px 5px 10px;
+    font-size: 16px;
+  }
+  .description_title_td {
+    width: 100px;
+  }
 }
 @media screen and (width < 760px) {
   .text_logo {
@@ -1378,6 +1394,9 @@ td {
   }
   .index_map {
     width: 100%;
+  }
+  .seventeen_adaptive {
+    display: none;
   }
 }
 
@@ -1458,6 +1477,9 @@ td {
   .product_cart p {
     max-width: 200px;
   }
+  .numb_categories_input {
+    width: 20px;
+  }
 }
 @media screen and (width < 500px) {
   .collab_block {
@@ -1472,10 +1494,22 @@ td {
   .popular_product_block p {
     font-size: 24px;
   }
+  .catalog_container {
+    width: auto;
+  }
 }
+
 @media screen and (width < 450px) {
   .text_logo,
   .adress_header img {
     display: none;
+  }
+  .container_heading_content h1 {
+    font-size: 20px;
+  }
+}
+@media screen and (width < 380px) {
+  .adress_header a {
+    font-size: 12px;
   }
 }

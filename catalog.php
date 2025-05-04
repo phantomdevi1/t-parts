@@ -108,34 +108,39 @@ if ($is_logged_in) {
   </div>
 
   <footer>
-        <div class="footer_block">
-            <div class="footer_info_block">
-                <p class="footer_title">Адрес:</p>
-                <p class="footer_text">Тверская область, Калининский муниципальный округ, торгово-промышленная зона Боровлёво-1, с4</p>
+  <div class="footer_block">
+            
 
-                <p class="footer_title">Номер телефона:</p>
-                <p class="footer_text">
-                    +7 909 267 0401
-                    <br>
-                    +7 909 267 0402
-                    <br>
-                    +7 909 267 0403
-                    <br>
-                    +7 (4822) 22-38-79
-                </p>
+            <div class="footer_text_container">
+                <div class="footer_info_block">
+                    <p class="footer_title">Адрес:</p>
+                    <p class="footer_text">Тверская область, Калининский муниципальный округ, торгово-промышленная зона Боровлёво-1, с4</p>
 
-                <p class="footer_title">График работы:</p>
-                <p class="footer_text">
-                    ПН-ВС: <br>
-                    09:00–21:00
-                </p>
+                    <p class="footer_title">Номер телефона:</p>
+                    <p class="footer_text">
+                        +7 909 267 0401
+                        <br>
+                        +7 909 267 0402
+                        <br>
+                        +7 909 267 0403
+                        <br>
+                        +7 (4822) 22-38-79
+                    </p>
+
+                    <p class="footer_title">График работы:</p>
+                    <p class="footer_text">
+                        ПН-ВС: <br>
+                        09:00–21:00
+                    </p>
+                </div>
+                <div class="footer_href_block">
+                    <p class="footer_title">Полезные ссылки:</p>
+                    <a href="https://autopremium-tank.ru" target="_blank" class="footer_text">Официальный дилер TANK в Твери</a>
+                    <a href="https://tank.ru" target="_blank" class="footer_text">Офицальный сайт TANK</a>
+                    <a href="http://sfchizhmai.temp.swtest.ru" target="_blank" class="footer_text">Автосервис TANK</a>
+                </div>
             </div>
-            <div class="footer_href_block">
-                <p class="footer_title">Полезные ссылки:</p>
-                <a href="https://autopremium-tank.ru" class="footer_text" target="_blank">Официальный дилер TANK в Твери</a>
-                <a href="https://tank.ru" class="footer_text" target="_blank">Офицальный сайт TANK</a>
-                <a href="http://sfchizhmai.temp.swtest.ru" class="footer_text" target="_blank">Автосервис TANK</a>
-            </div>
+
             <iframe src="https://yandex.ru/map-widget/v1/?um=constructor%3Abdf9bd6a194711bfb99b10395e8f217040bf9db9dbcc46aad19420ac28304fff&amp;source=constructor" class="index_map" frameborder="0"></iframe>
         </div>
     </footer>

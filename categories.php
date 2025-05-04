@@ -93,6 +93,7 @@ if ($is_logged_in) {
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Категория</title>
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" href="img/favicon.png" type="image/x-icon">
@@ -166,7 +167,7 @@ if ($is_logged_in) {
         <tbody>
         <?php while ($part = $parts_result->fetch_assoc()): ?>
             <tr>
-                <td><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="150"></td>
+                <td class="seventeen_adaptive"><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="150"></td>
                 <td class="description_title_td"><?= htmlspecialchars($part['name']) ?>
                     <div class="description_td">
                         <p><?= htmlspecialchars($part['applicability']) ?></p>
@@ -181,7 +182,7 @@ if ($is_logged_in) {
                     <input class="numb_categories_input" type="number" name="quantity" min="1"
                             max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" required>
                         <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
-                            <?= number_format($part['price'], 2, '.', ' ') ?> ₽
+                            <?= number_format($part['price']) ?> ₽
                         </p>
                         <button class="in-cart-btn" disabled>В корзине</button>
                     </div>
@@ -190,7 +191,7 @@ if ($is_logged_in) {
                         <input type="hidden" name="part_id" value="<?= $part['id'] ?>">
                         <input class="numb_categories_input" type="number" name="quantity" min="1" value="1" required>
                         <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
-                            <?= number_format($part['price'], 2, '.', ' ') ?> ₽
+                            <?= number_format($part['price']) ?> ₽
                         </p>
                         <button type="submit" name="add_to_cart" class="add-to-cart">В корзину</button>
                     </form>
