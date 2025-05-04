@@ -121,7 +121,7 @@ if ($is_logged_in) {
     </div>
     <div class="block_header_background">
         <div class="block_header">
-            <a href="index.php" style="height: 40px;"><img src="img/favicon.png" alt="" class="logo_header"></a>
+            <a href="index.php" class="logo_header_href" style="height: 40px;"><img src="img/favicon.png" alt="" class="logo_header"></a>
             <a href="index.php" class="text_logo">T-PARTS</a>
 
             <div class="catalog-container">
