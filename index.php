@@ -21,7 +21,7 @@ if ($is_logged_in) {
 $sql = "SELECT title, content, DATE_FORMAT(created_at, '%d.%m.%Y') as formatted_date FROM news ORDER BY created_at DESC LIMIT 5";
 $result = $conn->query($sql);
 
-// Создаём массив для хранения новостей
+// массив для хранения новостей
 $news = [];
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
