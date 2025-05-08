@@ -123,7 +123,7 @@ if ($is_logged_in) {
   <div class="user_block">
     <h1>Личный кабинет</h1>
     <div class="user_info">
-    <table class="user_info_table" style="border-collapse: collapse; width: 100%; max-width: 700px;">
+    <table class="user_info_table">
       <tr>
         <td style="padding: 8px;">Имя</td>
         <td style="padding: 8px;"><?= htmlspecialchars($user_info['username']) ?></td>
@@ -155,7 +155,7 @@ if ($is_logged_in) {
         <thead>
           <tr>
             <th>Номер заказа</th>
-            <th>Дата</th>
+            <th class="fiveteen_adaptive">Дата</th>
             <th>Статус</th>
             <th>Сумма</th>
             <th>Действия</th>
@@ -165,9 +165,9 @@ if ($is_logged_in) {
           <?php while ($order = $orders_result->fetch_assoc()): ?>
             <tr>
               <td><?= $order['id'] ?></td>
-              <td><?= $order['created_at'] ?></td>
+              <td class="fiveteen_adaptive"><?= $order['created_at'] ?></td>
               <td><?= $order['status'] ?></td>
-              <td><?= $order['total_price'] ?> ₽</td>
+              <td><?= $order['total_price'] ?>₽</td>
               <td><button onclick="toggleOrderDetails(<?= $order['id'] ?>)">Показать состав</button></td>
             </tr>
             <tr id="order-details-<?= $order['id'] ?>" style="display: none;">
@@ -179,7 +179,7 @@ if ($is_logged_in) {
                       <tr>
                         <th>Товар</th>
                         <th>Количество</th>
-                        <th>Цена за шт.</th>
+                        <th class="fiveteen_adaptive">Цена за шт.</th>
                         <th>Сумма</th>
                       </tr>
                     </thead>
@@ -199,7 +199,7 @@ if ($is_logged_in) {
                         <tr>
                           <td><?= htmlspecialchars($order_item['name']) ?></td>
                           <td><?= $order_item['quantity'] ?></td>
-                          <td><?= $order_item['price'] ?> ₽</td>
+                          <td class="fiveteen_adaptive"><?= $order_item['price'] ?> ₽</td>
                           <td><?= $order_item['quantity'] * $order_item['price'] ?> ₽</td>
                         </tr>
                       <?php endwhile; ?>

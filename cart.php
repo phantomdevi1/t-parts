@@ -255,19 +255,17 @@ while ($row = $result->fetch_assoc()) {
                 <img src="<?= htmlspecialchars($item['image_path']) ?>" alt="" width="150">
             </div>
             <div class="cart_item_info">
-                <div class="description_title_td"><?= htmlspecialchars($item['name']) ?></div>
-                <div class="description_td"><?= htmlspecialchars($item['price']) ?> ₽</div>
-            </div>
-            <div class="cart_item_qty">
-                <form method="post" class="update-qty-form">
+                <p class="description_title_td"><?= htmlspecialchars($item['name']) ?></p>
+                <p class="description_td"><?= htmlspecialchars($item['price']) ?> ₽</p>
+            </div>            
+                <form method="post" class="cart_item_qty">
                     <input type="hidden" name="update_item_id" value="<?= $item['cart_id'] ?>">
                     <input type="number" name="new_quantity" value="<?= $item['quantity'] ?>" min="1" class="qty-input" style="width: 50px;">
                     <button type="submit">OK</button>
-                </form>
-            </div>
-            <div class="cart_item_total">
-                <?= $item['price'] * $item['quantity'] ?> ₽
-            </div>
+                </form>            
+            <p class="cart_item_total">
+                <?= $item['price'] * $item['quantity'] ?>₽
+            </p>
             <div class="cart_item_delete">
                 <form method="post" style="display:inline;">
                     <input type="hidden" name="remove_item" value="<?= $item['cart_id'] ?>">
@@ -279,7 +277,7 @@ while ($row = $result->fetch_assoc()) {
 
 
 
-        <h3>Итого: <?= $total ?> ₽</h3>
+        <h3 class="full_price_cart">Итого: <?= $total ?> ₽</h3>
         <form method="post">
             <button type="submit" name="checkout" class="add_cart_btn">Оформить заказ</button>
         </form>

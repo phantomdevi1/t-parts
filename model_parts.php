@@ -176,45 +176,43 @@ if ($is_logged_in) {
         <?php endif; ?>
     </div>
 
-    <table class="parts_table">
-        <tbody>
-        <?php while ($part = $parts_result->fetch_assoc()): ?>
-            <tr>
-                <td><img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>" width="150"></td>
-                <td class="description_title_td"><?= htmlspecialchars($part['name']) ?>
-                    <div class="description_td">
-                        <p><?= htmlspecialchars($part['applicability']) ?></p>
-                    </div>
-                </td>
-                <td style="color: <?= $part['availability'] === 'В наличии' ? 'green' : 'red' ?>;">
+    <div class="parts_container">
+    <?php while ($part = $parts_result->fetch_assoc()): ?>
+        <div class="part_card">
+            <div class="part_image">
+                <img src="<?= htmlspecialchars($part['image_path']) ?>" alt="<?= htmlspecialchars($part['name']) ?>">
+            </div>
+            <div class="part_info">
+                <div class="name_descreption_box">
+                    <h3 class="part_name"><?= htmlspecialchars($part['name']) ?></h3>
+                    <p class="part_desc"><?= htmlspecialchars($part['applicability']) ?></p>
+                </div>
+                <p class="part_availability" style="color: <?= $part['availability'] === 'В наличии' ? 'green' : 'red' ?>;">
                     <?= htmlspecialchars($part['availability']) ?>
-                </td>
-                <td style="text-align: end;">
-                    <?php if (isset($parts_in_cart[$part['id']])): ?>
-                        <div class="categories_form_inline">
-                            <input class="numb_categories_input" type="number" min="1"
-                                max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" disabled>
-                            <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
-                                <?= number_format($part['price'], 2, '.', ' ') ?> ₽
-                            </p>
-                            <button class="in-cart-btn" disabled>В корзине</button>
-                        </div>
+                </p>
+                <div class="part_actions">
+                    <?php if (array_key_exists($part['id'], $parts_in_cart)): ?>
+                        <input class="numb_categories_input" type="number" name="quantity" min="1"
+                               max="<?= $part['stock'] > 0 ? $part['stock'] : 1 ?>" value="1" required>
+                        <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
+                            <?= number_format($part['price']) ?> ₽
+                        </p>
+                        <button class="in-cart-btn" disabled>В корзине</button>
                     <?php else: ?>
                         <form method="post" class="categories_form_inline" onsubmit="return validateStock(this, <?= $part['stock'] ?>)">
                             <input type="hidden" name="part_id" value="<?= $part['id'] ?>">
                             <input class="numb_categories_input" type="number" name="quantity" min="1" value="1" required>
                             <p class="price <?= $part['promotion'] ? 'promo-price' : '' ?>">
-                                <?= number_format($part['price'], 2, '.', ' ') ?> ₽
+                                <?= number_format($part['price']) ?> ₽
                             </p>
                             <button type="submit" name="add_to_cart" class="add-to-cart">В корзину</button>
                         </form>
-
                     <?php endif; ?>
-                </td>
-            </tr>
-        <?php endwhile; ?>
-        </tbody>
-    </table>
+                </div>
+            </div>
+        </div>
+    <?php endwhile; ?>
+</div>
 </div>
 <script>
 function validateStock(form, stock) {

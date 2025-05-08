@@ -79,6 +79,7 @@ $orders = $conn->query("
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Панель администратора</title>
   <link rel="stylesheet" href="style.css">
   <link rel="shortcut icon" href="img/favicon.png">
@@ -118,7 +119,7 @@ $orders = $conn->query("
 
   <div class="user_orders">
     <div class="admin_href_block">
-      <a href="full_parts.php" class="admin_href_btn">Все товары</a>
+      <a href="full_parts.php" class="admin_href_btn onesousend_adaptive">Все товары</a>
       <a href="new_part.php" class="admin_href_btn">Добавить товар</a>
     </div>
     <h2 class="admin_table_title">Все заказы</h2>
@@ -126,8 +127,8 @@ $orders = $conn->query("
       <thead>
         <tr>
           <th>ID</th>
-          <th>Пользователь</th>
-          <th>Дата</th>
+          <th class="fiveteen_adaptive">Пользователь</th>
+          <th class="sixteen_adaptive">Дата</th>
           <th>Статус</th>
           <th>Сумма</th>
           <th>Действия</th>
@@ -140,8 +141,8 @@ $orders = $conn->query("
               <input type="hidden" name="order_id" value="<?= $order['id'] ?>">
               <input type="hidden" name="update_status" value="1">
               <td><?= $order['id'] ?></td>
-              <td><?= htmlspecialchars($order['username']) ?></td>
-              <td><?= $order['created_at'] ?></td>
+              <td class="fiveteen_adaptive"><?= htmlspecialchars($order['username']) ?></td>
+              <td class="sixteen_adaptive"><?= $order['created_at'] ?></td>
               <td>
                 <select name="status">
                   <?php
@@ -153,7 +154,7 @@ $orders = $conn->query("
                   ?>
                 </select>
               </td>
-              <td><?= $order['total_price'] ?> ₽</td>
+              <td><?= $order['total_price'] ?>₽</td>
               <td><button type="submit">Обновить</button></td>
             </form>
           </tr>
