@@ -16,11 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $confirm  = $_POST['confirm_password'];
     $isAdmin = 0;
 
-    if (empty($name) || empty($email) || empty($phone) || empty($password) || empty($confirm)) {
-        $error_message = "Пожалуйста, заполните все поля.";
-    } elseif ($password !== $confirm) {
-        $error_message = "Пароли не совпадают.";
-    } else {
+        if (empty($name) || empty($email) || empty($phone) || empty($password) || empty($confirm)) {
+            $error_message = "Пожалуйста, заполните все поля.";
+        } elseif (!preg_match('/^(\+7|8)\d{10}$/', $phone)) {
+            $error_message = "Введите корректный российский номер телефона.";
+        } elseif ($password !== $confirm) {
+            $error_message = "Пароли не совпадают.";
+        }else {
         $check_sql = "SELECT id FROM users WHERE email = ? OR phone = ?";
         $stmt = $conn->prepare($check_sql);
         $stmt->bind_param("ss", $email, $phone);
@@ -121,7 +123,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="post" class="registr-form">
             <input type="text" name="name" required placeholder="Имя">
             <input type="email" name="email" required placeholder="E-mail">
-            <input type="text" name="phone" required placeholder="Номер телефона">
+            <input type="text" name="phone" required placeholder="Номер телефона" pattern="^(\+7|8)\d{10}$" title="Введите номер в формате +7XXXXXXXXXX или 8XXXXXXXXXX">
+
             <input type="password" name="password" required placeholder="Пароль">
             <input type="password" name="confirm_password" required placeholder="Подтверждение пароля">
             <button class="registration_btn" type="submit">Зарегистрироваться</button>
